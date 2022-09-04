@@ -1,0 +1,52 @@
+<div class="container">
+  <div class="card m-3">
+    <h5 class="card-header">Login</h5>
+    <div class="card-body col-6 center">
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1">@</span>
+        </div>
+        <input
+          type="email"
+          class="form-control"
+          placeholder="Email"
+          aria-label="Email"
+          aria-describedby="basic-addon1"
+          [(ngModel)]="email"
+        />
+      </div>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1">**</span>
+        </div>
+        <input
+          type="password"
+          class="form-control"
+          placeholder="Password"
+          aria-label="Password"
+          aria-describedby="basic-addon1"
+          [(ngModel)]="password"
+        />
+      </div>
+    </div>
+    <div class="text-center">
+      <button class="btn btn-primary mr-1" (click)="Signin()">Sign in</button>
+      <br />
+      <a (click)="goToRegister()">
+        <small>Don't already have an account? register now.</small>
+      </a>
+    </div>
+
+    <div class="alert alert-danger" *ngIf="errors">
+      <strong>Error!</strong> Email and Password are requiered.
+    </div>
+    <br />
+  </div>
+</div>
+<div
+  class="spinner-border text-primary middle"
+  role="status"
+  *ngIf="loading == true"
+>
+  <span class="sr-only">Loading...</span>
+</div>
