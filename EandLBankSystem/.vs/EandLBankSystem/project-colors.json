@@ -1,0 +1,26 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "024c0e0c-2762-4d2f-a5e9-11bebab2e6ad": {
+      "ProjectGuid": "024c0e0c-2762-4d2f-a5e9-11bebab2e6ad",
+      "DisplayName": "Account.WebAPI",
+      "ColorIndex": 0
+    },
+    "9cf47ea3-7c9c-44a6-97ce-831010618866": {
+      "ProjectGuid": "9cf47ea3-7c9c-44a6-97ce-831010618866",
+      "DisplayName": "Account.Data",
+      "ColorIndex": 1
+    },
+    "c8b532d3-8bda-4b7b-b98f-1deb15179bd6": {
+      "ProjectGuid": "c8b532d3-8bda-4b7b-b98f-1deb15179bd6",
+      "DisplayName": "Account.Service",
+      "ColorIndex": 2
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "Miscellaneous Files",
+      "ColorIndex": -1
+    }
+  },
+  "NextColorIndex": 3
+}
