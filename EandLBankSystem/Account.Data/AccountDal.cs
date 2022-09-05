@@ -11,15 +11,17 @@ public class AccountDal:IAccountDal
     public AccountDal(IDbContextFactory<AccountContext> factory)
     {
         _factory = factory ?? throw new ArgumentNullException(nameof(factory));
+        using var db = _factory.CreateDbContext();
+        db.Database.Migrate();
     }
     public async Task<int> SignIn(string email, string password)
     {
         using var db = _factory.CreateDbContext();
         Customer customerFound = await db.Customers
             .FirstOrDefaultAsync(c => c.Email.Equals(email)
-                                   && c.Password.Equals(password)) ?? throw new ArgumentException("Invalid Input");
+                                   && c.Password.Equals(password)) ?? throw new UnauthorizedAccessException("The requested user was not found.");
         Entities.Account accountFound = await db.Accounts
-            .FirstOrDefaultAsync(a => a.CustomerId == customerFound.Id);
+            .FirstOrDefaultAsync(a => a.CustomerId == customerFound.Id) ?? throw new Exception("Internal Server Error.");
         return accountFound.Id;
     }
     public async Task<Entities.Account> GetAccountInfo(int id)
@@ -27,9 +29,8 @@ public class AccountDal:IAccountDal
         using var db = _factory.CreateDbContext();
         Entities.Account accountFound = await db.Accounts
             .Where(a=>a.Id==id).Include(a=> a.Customer)
-            .FirstOrDefaultAsync() ?? throw new ArgumentException(nameof(id));
+            .FirstOrDefaultAsync() ?? throw new KeyNotFoundException(nameof(id));
         return accountFound;
-
     }
 
     public async Task<bool> SignUp(Customer customer)
@@ -53,7 +54,7 @@ public class AccountDal:IAccountDal
         }
         return true;
     }
-    public async Task<bool> EmailAddressUnique(string email)
+    public async Task<bool> EmailAddressExists(string email)
     {
        using var db = _factory.CreateDbContext();
        return await db.Customers.AnyAsync(c => c.Email.Equals(email));  

@@ -12,7 +12,6 @@ public static class ServicesExtention
     {
         services.AddScoped<IAccountDal, AccountDal>();
         services.AddDbContextFactory<AccountContext>(opt => opt.UseSqlServer(connectionString));
-
     }
 
 }

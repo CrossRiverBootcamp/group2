@@ -35,9 +35,7 @@ public class AccountController : ControllerBase
     public async Task<ActionResult<bool>> SignUp([FromBody] SignUpDTO signUpDTO)
     {
         bool result = await _accountService.SignUp(_mapper.Map<CustomerModel>(signUpDTO));
-        if (result == false)
-            return BadRequest();
-        return Ok(result);
+        return result ? Ok(result) : BadRequest(result);
     }
 }
 

@@ -11,3 +11,4 @@ C:\BootCamp\FinalProject\group2\EandLBankSystem\Account.Data\obj\Debug\net6.0\Ac
 C:\BootCamp\FinalProject\group2\EandLBankSystem\Account.Data\obj\Debug\net6.0\ref\Account.Data.dll
 C:\BootCamp\FinalProject\group2\EandLBankSystem\Account.Data\obj\Debug\net6.0\Account.Data.pdb
 C:\BootCamp\FinalProject\group2\EandLBankSystem\Account.Data\obj\Debug\net6.0\Account.Data.genruntimeconfig.cache
+C:\BootCamp\FinalProject\group2\EandLBankSystem\Account.Data\obj\Debug\net6.0\Account.Data.csproj.AssemblyReference.cache

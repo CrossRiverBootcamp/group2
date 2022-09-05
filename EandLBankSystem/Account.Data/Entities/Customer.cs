@@ -13,7 +13,7 @@ public class Customer
     [MaxLength(30)]
     public string FirstName { get; set; }
     [Required]
-    [MaxLength(30)]
+    [MaxLength(40)]
     public string LastName { get; set; }
     [Required]
     [EmailAddress]
