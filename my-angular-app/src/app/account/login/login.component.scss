@@ -1,0 +1,25 @@
+.center{
+    margin: auto;
+}
+
+.container{
+    width: 500px;
+    margin: auto;
+    margin-top: 100px;
+}
+
+small{
+    color: var(--bs-link-color);
+    text-decoration: underline;
+}
+
+small:hover{
+    text-decoration: none;
+    opacity: 50%;
+    cursor: pointer;
+}
+
+.middle{
+    padding: auto;
+    margin-left: 48%;
+}
