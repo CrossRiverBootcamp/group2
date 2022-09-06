@@ -1,0 +1,14 @@
+C:\BootCamp\FinalProject\group2\EandLBankSystem\Account.Data\bin\Debug\net6.0\Account.Data.deps.json
+C:\BootCamp\FinalProject\group2\EandLBankSystem\Account.Data\bin\Debug\net6.0\Account.Data.runtimeconfig.json
+C:\BootCamp\FinalProject\group2\EandLBankSystem\Account.Data\bin\Debug\net6.0\Account.Data.dll
+C:\BootCamp\FinalProject\group2\EandLBankSystem\Account.Data\bin\Debug\net6.0\ref\Account.Data.dll
+C:\BootCamp\FinalProject\group2\EandLBankSystem\Account.Data\bin\Debug\net6.0\Account.Data.pdb
+C:\BootCamp\FinalProject\group2\EandLBankSystem\Account.Data\obj\Debug\net6.0\Account.Data.GeneratedMSBuildEditorConfig.editorconfig
+C:\BootCamp\FinalProject\group2\EandLBankSystem\Account.Data\obj\Debug\net6.0\Account.Data.AssemblyInfoInputs.cache
+C:\BootCamp\FinalProject\group2\EandLBankSystem\Account.Data\obj\Debug\net6.0\Account.Data.AssemblyInfo.cs
+C:\BootCamp\FinalProject\group2\EandLBankSystem\Account.Data\obj\Debug\net6.0\Account.Data.csproj.CoreCompileInputs.cache
+C:\BootCamp\FinalProject\group2\EandLBankSystem\Account.Data\obj\Debug\net6.0\Account.Data.dll
+C:\BootCamp\FinalProject\group2\EandLBankSystem\Account.Data\obj\Debug\net6.0\ref\Account.Data.dll
+C:\BootCamp\FinalProject\group2\EandLBankSystem\Account.Data\obj\Debug\net6.0\Account.Data.pdb
+C:\BootCamp\FinalProject\group2\EandLBankSystem\Account.Data\obj\Debug\net6.0\Account.Data.genruntimeconfig.cache
+C:\BootCamp\FinalProject\group2\EandLBankSystem\Account.Data\obj\Debug\net6.0\Account.Data.csproj.AssemblyReference.cache
