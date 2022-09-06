@@ -35,7 +35,7 @@ public class AccountDal:IAccountDal
 
     public async Task<bool> SignUp(Customer customer)
     {
-        if(await EmailAddressUnique(customer.Email))  
+        if(await EmailAddressExists(customer.Email))  
             throw new ArgumentException(nameof(customer));
         using var db = _factory.CreateDbContext();
         await db.Customers.AddAsync(customer);
