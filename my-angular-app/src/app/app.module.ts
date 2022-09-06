@@ -3,19 +3,20 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AccountModule } from './account/account.module';
-import { NavBarComponent } from './app-components/nav-bar/nav-bar.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { UserService } from './services/user.service';
+import { MainComponentsModule } from './main-components/main-components.module';
 
 @NgModule({
-  declarations: [AppComponent, NavBarComponent],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
     AccountModule,
     HttpClientModule,
+    MainComponentsModule,
   ],
   providers: [UserService],
   bootstrap: [AppComponent],
