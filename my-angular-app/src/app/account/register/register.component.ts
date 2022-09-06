@@ -1,10 +1,10 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AppComponent } from 'src/app/app.component';
 import { Login } from 'src/app/models/Login';
 import { Register } from 'src/app/models/Register';
-import { AccountService } from 'src/app/services/Account.service';
+import { AccountService } from 'src/app/services/account.service';
+import { UserService } from 'src/app/services/user.service';
 import { MustMatch } from '../helpers/MustMatch.validator';
 
 @Component({
@@ -16,6 +16,8 @@ export class RegisterComponent implements OnInit {
   submitted: boolean = false;
   showError: boolean = false;
   loading: boolean = false;
+
+  @Output() goToLoginEvent = new EventEmitter<boolean>();
 
   registerForm = this.formBuilder.group(
     {
@@ -38,7 +40,7 @@ export class RegisterComponent implements OnInit {
     private formBuilder: FormBuilder,
     private accountService: AccountService,
     private route: Router,
-    @Inject(AppComponent) private parent: AppComponent
+    private userService: UserService
   ) {}
 
   ngOnInit() {}
@@ -92,8 +94,7 @@ export class RegisterComponent implements OnInit {
       (res) => {
         this.accountService.login(loginSubscriber).then(
           (res) => {
-            sessionStorage.setItem('AccountID', res.toString());
-            this.parent.authorized = true;
+            this.userService.setAccountID(res);
             this.route.navigate(['']);
           },
           (err) => {
@@ -115,6 +116,6 @@ export class RegisterComponent implements OnInit {
   }
 
   goToLogin() {
-    this.parent.register = false;
+    this.goToLoginEvent.emit(true);
   }
 }

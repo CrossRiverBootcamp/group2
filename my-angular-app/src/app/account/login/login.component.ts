@@ -1,8 +1,8 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { AppComponent } from 'src/app/app.component';
 import { Login } from 'src/app/models/Login';
-import { AccountService } from 'src/app/services/Account.service';
+import { AccountService } from 'src/app/services/account.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-login',
@@ -15,10 +15,12 @@ export class LoginComponent {
   errors: boolean = false;
   loading: boolean = false;
 
+  @Output() goToRegisterEvent = new EventEmitter<boolean>();
+
   constructor(
     private accountServise: AccountService,
     private route: Router,
-    @Inject(AppComponent) private parent: AppComponent
+    private userService: UserService
   ) {}
 
   Signin(): void {
@@ -45,8 +47,7 @@ export class LoginComponent {
     // );
     this.accountServise.login(login).then(
       (res) => {
-        sessionStorage.setItem('AccountID', res.toString());
-        this.parent.authorized = true;
+        this.userService.setAccountID(res);
         this.route.navigate(['']);
         this.loading = false;
       },
@@ -58,6 +59,6 @@ export class LoginComponent {
   }
 
   goToRegister() {
-    this.parent.register = true;
+    this.goToRegisterEvent.emit(true);
   }
 }

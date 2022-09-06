@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { UserService } from './services/user.service';
 
 @Component({
   selector: 'app-root',
@@ -8,8 +9,6 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class AppComponent {
   title = 'E&L-Bank-accounts-app';
-  register?: boolean = sessionStorage.getItem('AccountID') ? true : false;
-  authorized?: boolean = false;
 
   constructor(private modalService: NgbModal) {}
 
