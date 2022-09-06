@@ -4,23 +4,6 @@
   <div class="card-body">
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
       <div class="form-row">
-        <div class="form-group col-3">
-          <label>Height</label>
-          <input
-            type="text"
-            formControlName="height"
-            class="form-control"
-            [ngClass]="{
-              'is-invalid': submitted && f['height'].errors
-            }"
-          />
-          <div *ngIf="submitted && f['height'].errors" class="invalid-feedback">
-            <div *ngIf="f['height'].errors['required']">Height is required</div>
-            <div *ngIf="f['height'].errors['pattern']">
-              Height has to be a float number
-            </div>
-          </div>
-        </div>
         <div class="form-group col-5">
           <label>First Name</label>
           <input

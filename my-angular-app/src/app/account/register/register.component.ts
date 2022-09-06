@@ -23,10 +23,6 @@ export class RegisterComponent implements OnInit {
     {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
-      height: [
-        '',
-        [Validators.required, Validators.pattern(/^-?([1-9].[1-9]\d*)?$/)],
-      ],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', Validators.required],
@@ -63,7 +59,6 @@ export class RegisterComponent implements OnInit {
       password: this.f['password'].value,
       firstName: this.f['firstName'].value,
       lastName: this.f['lastName'].value,
-      height: this.f['height'].value,
     };
 
     const loginSubscriber: Login = {
@@ -71,28 +66,10 @@ export class RegisterComponent implements OnInit {
       password: newSubscriber.password,
     };
 
-    // this.accountService.register(newSubscriber).subscribe(
-    //   (res) => {
-    //     this.accountService.login(loginSubscriber).subscribe(
-    //       (res) => {
-    //         sessionStorage.setItem('AccountID', res.toString());
-    //         this.parent.authorized = true;
-    //         this.route.navigate(['']);
-    //       },
-    //       (err) => {
-    //         console.log(err);
-    //       }
-    //     );
-    //   },
-    //   (err) => {
-    //     console.log(err);
-    //     this.showError = true;
-    //   }
-    // );
     this.loading = true;
-    this.accountService.register(newSubscriber).then(
+    this.accountService.register(newSubscriber).subscribe(
       (res) => {
-        this.accountService.login(loginSubscriber).then(
+        this.accountService.login(loginSubscriber).subscribe(
           (res) => {
             this.userService.setAccountID(res);
             this.route.navigate(['']);

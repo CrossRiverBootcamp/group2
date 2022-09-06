@@ -35,18 +35,10 @@ export class LoginComponent {
     };
 
     this.loading = true;
-    // this.accountServise.login(login).subscribe(
-    //   (res) => {
-    //     sessionStorage.setItem('AccountID', res.toString());
-    //     this.parent.authorized = true;
-    //     this.route.navigate(['']);
-    //   },
-    //   (err) => {
-    //     console.log(err);
-    //   }
-    // );
-    this.accountServise.login(login).then(
+
+    this.accountServise.login(login).subscribe(
       (res) => {
+        debugger;
         this.userService.setAccountID(res);
         this.route.navigate(['']);
         this.loading = false;

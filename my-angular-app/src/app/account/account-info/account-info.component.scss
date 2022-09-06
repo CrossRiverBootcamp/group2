@@ -25,3 +25,12 @@
 .s{
     margin: 0px;
 }
+
+small{
+    color: var(--bs-link-color);
+}
+
+small:hover{
+    opacity: 50%;
+    cursor: pointer;
+}
