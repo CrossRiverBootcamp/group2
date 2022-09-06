@@ -14,6 +14,13 @@ public class AccountDal:IAccountDal
         using var db = _factory.CreateDbContext();
         db.Database.Migrate();
     }
+    public async Task<Customer> getCustomerByEmail(string email)
+    {
+        using var db = _factory.CreateDbContext();
+        Customer customerFound = await db.Customers
+            .FirstOrDefaultAsync(c => c.Email.Equals(email)) ?? throw new UnauthorizedAccessException("The requested user was not found."); 
+        return customerFound;
+    }
     public async Task<int> SignIn(string email, string password)
     {
         using var db = _factory.CreateDbContext();
@@ -35,7 +42,7 @@ public class AccountDal:IAccountDal
 
     public async Task<bool> SignUp(Customer customer)
     {
-        if(await EmailAddressUnique(customer.Email))  
+        if(await EmailAddressExists(customer.Email))  
             throw new ArgumentException(nameof(customer));
         using var db = _factory.CreateDbContext();
         await db.Customers.AddAsync(customer);

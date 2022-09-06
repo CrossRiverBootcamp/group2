@@ -4,6 +4,7 @@ using Account.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Account.Data.Migrations
 {
     [DbContext(typeof(AccountContext))]
-    partial class AccountContextModelSnapshot : ModelSnapshot
+    [Migration("20220906095442_Add Salt")]
+    partial class AddSalt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -76,8 +78,8 @@ namespace Account.Data.Migrations
 
                     b.Property<string>("Salt")
                         .IsRequired()
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
+                        .HasMaxLength(6)
+                        .HasColumnType("nvarchar(6)");
 
                     b.HasKey("Id");
 

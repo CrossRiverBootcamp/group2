@@ -10,6 +10,7 @@ var connectionString = builder.Configuration.GetConnectionString("AccountDatabas
 
 builder.Services.AddServicesExtention(connectionString);
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IPasswordHash, PasswordHash>();
 builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddControllers();
