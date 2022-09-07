@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 import { Transaction } from '../models/Transaction';
 
@@ -7,12 +8,12 @@ import { Transaction } from '../models/Transaction';
   providedIn: 'root'
 })
 export class TransactionService {
-  private base = 'https://localhost:7007/api';
+  private base = 'https://localhost:7007/api/transaction';
 
   constructor(private http: HttpClient) { }
 
-//   addNewTransaction(newTransaction:Transaction):Observable<boolean>{
-//   this.http.post<boolean>(`${this.base}/Login`,)
-//   }
+  addNewTransaction(newTransaction:Transaction):Observable<boolean>{
+    return this.http.post<boolean>(`${this.base}`,newTransaction);
+  }
 
  }

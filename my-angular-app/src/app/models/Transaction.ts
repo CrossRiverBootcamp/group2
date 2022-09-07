@@ -1,4 +1,5 @@
 export interface Transaction{
-    accountId:number;
+    fromAccount: number;
+    toAccount:number;
     amount:number;
 }

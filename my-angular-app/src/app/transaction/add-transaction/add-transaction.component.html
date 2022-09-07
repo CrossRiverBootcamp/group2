@@ -1,5 +1,5 @@
 <form [formGroup]="transactionForm">
 <input type="number" formControlName="accountId">
 <input type="number" formControlName="amount">
-<button>add transaction</button>
+<button (click)="addNewTransaction()"> transaction</button>
 </form>
