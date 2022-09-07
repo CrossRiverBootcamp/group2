@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { Login } from 'src/app/models/Login';
 import { AccountService } from 'src/app/services/account.service';
@@ -45,6 +45,7 @@ export class LoginComponent {
       },
       (err) => {
         console.log(err);
+        this.errors = true;
         this.loading = false;
       }
     );
