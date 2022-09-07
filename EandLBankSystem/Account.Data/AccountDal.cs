@@ -66,5 +66,23 @@ public class AccountDal:IAccountDal
        using var db = _factory.CreateDbContext();
        return await db.Customers.AnyAsync(c => c.Email.Equals(email));  
     }
+
+    public async Task TransferAmmount(int fromAccount, int toAccount, int ammount)
+    {
+        using var db = _factory.CreateDbContext();
+        var from = await db.Accounts.FirstOrDefaultAsync(a => a.Id == fromAccount);
+        var to = await db.Accounts.FirstOrDefaultAsync(a => a.Id == toAccount);
+
+        if (from == null || to == null)
+            throw new KeyNotFoundException("One or more accounts don't exist in db.");
+
+        if (from.Balance < ammount)
+            throw new Exception("There is not enough balance in the account");
+
+        from.Balance -= ammount;
+        to.Balance += ammount;
+
+        await db.SaveChangesAsync();
+    }
 }
 
