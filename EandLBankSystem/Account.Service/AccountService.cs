@@ -27,6 +27,16 @@ public class AccountService:IAccountService
     {
         return _accountDal.SignUp(_mapper.Map<Customer>(customerModel));
     }
+    public async Task ExecuteTransaction(TransactionModel transactionModel)
+    {
+        try {       
+            await _accountDal.TransferAmmount(transactionModel.FromAccount, transactionModel.ToAccount, transactionModel.Ammount);
+        }
+        catch
+        {
+            throw;
+        }
+    }
 
     private static IMapper ConfigureAutoMapper()
     {
@@ -36,7 +46,5 @@ public class AccountService:IAccountService
         });
         return config.CreateMapper();
     }
-
-
 }
 

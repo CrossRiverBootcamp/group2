@@ -6,15 +6,12 @@ namespace Account.Data.Entities;
 
 public class Account
 {
-    [Key]
-    [Required]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Key, Required, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
-    [Required]
-    [DataType(DataType.Date)]
+    [Required, DataType(DataType.Date)]
     public DateTime OpenDate { get; set; }
     [Required]
-    public decimal Balance { get; set; }
+    public decimal Balance { get; set; } = 1000;
     [Required]
     public int CustomerId { get; set; }
     [ForeignKey("CustomerId")]
