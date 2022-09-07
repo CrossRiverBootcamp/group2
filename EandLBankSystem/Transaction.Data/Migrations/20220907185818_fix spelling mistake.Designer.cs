@@ -12,8 +12,8 @@ using Transaction.Data.Entities;
 namespace Transaction.Data.Migrations
 {
     [DbContext(typeof(TransactionContext))]
-    [Migration("20220906151645_init")]
-    partial class init
+    [Migration("20220907185818_fix spelling mistake")]
+    partial class fixspellingmistake
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

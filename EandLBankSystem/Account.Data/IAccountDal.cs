@@ -8,7 +8,7 @@ public interface IAccountDal
     Task<int> SignIn(string email, string password);
     Task<Entities.Account> GetAccountInfo(int id);
     Task<bool> SignUp(Customer customer);
-    Task TransferAmmount(int FromAccount, int toAccount, int ammount);
+    Task TransferAmount(int FromAccount, int toAccount, int amount);
 
 }
 

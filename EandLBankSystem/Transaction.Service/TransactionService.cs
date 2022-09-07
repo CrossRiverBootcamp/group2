@@ -31,7 +31,7 @@ public class TransactionService : ITransactionService
             StartTransactionSaga startTransactionSaga = new()
             {
                 TransactionId = transactionId,
-                Ammount = transactionModel.Ammount,
+                Amount = transactionModel.Amount,
                 FromAccount = transactionModel.FromAccount,
                 ToAccount = transactionModel.ToAccount,
             };

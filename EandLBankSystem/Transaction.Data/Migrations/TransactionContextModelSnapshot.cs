@@ -30,7 +30,7 @@ namespace Transaction.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("Ammount")
+                    b.Property<int>("Amount")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Date")

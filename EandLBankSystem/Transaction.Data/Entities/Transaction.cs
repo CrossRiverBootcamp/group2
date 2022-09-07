@@ -15,7 +15,7 @@ public class Transaction
     [Required]
     public int ToAccount { get; set; }
     [Required, Range(1, 1000000)]
-    public int Ammount { get; set; }
+    public int Amount { get; set; }
     [Required, DataType(DataType.Date)]
     public DateTime Date { get; set; }
     [Required]

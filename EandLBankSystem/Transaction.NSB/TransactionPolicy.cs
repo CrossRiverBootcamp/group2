@@ -24,7 +24,7 @@ public class TransactionPolicy : Saga<TransactionPolicyData>, IAmStartedByMessag
 
         TransactionSagaStarted transactionSagaStarted = new() {
             TransactionId = message.TransactionId,
-            Ammount = message.Ammount,
+            Amount = message.Amount,
             FromAccount = message.FromAccount,
             ToAccount = message.ToAccount
         };

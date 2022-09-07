@@ -14,12 +14,18 @@ public class AccountService:IAccountService
     private static readonly int N_HASH = 9;
     private static readonly int N_ITERATIONS = 900;
 
+    public AccountService(IAccountDal accountDal)
+    {
+        _accountDal = accountDal;
+        _mapper = ConfigureAutoMapper();
+    }
     public AccountService(IAccountDal accountDal , IPasswordHash passwordHash)
     {
         _accountDal = accountDal;
         _mapper = ConfigureAutoMapper();
         _passwordHash = passwordHash;
     }
+   
     public async Task<int> SignIn(string email, string password)
     {
         string salt = await _accountDal.getCustomerByEmail(email);
@@ -41,7 +47,7 @@ public class AccountService:IAccountService
     public async Task ExecuteTransaction(TransactionModel transactionModel)
     {
         try {       
-            await _accountDal.TransferAmmount(transactionModel.FromAccount, transactionModel.ToAccount, transactionModel.Ammount);
+            await _accountDal.TransferAmount(transactionModel.FromAccount, transactionModel.ToAccount, transactionModel.Amount);
         }
         catch
         {
