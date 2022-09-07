@@ -14,12 +14,12 @@ public class AccountDal:IAccountDal
         using var db = _factory.CreateDbContext();
         db.Database.Migrate();
     }
-    public async Task<Customer> getCustomerByEmail(string email)
+    public async Task<string> getCustomerByEmail(string email)
     {
         using var db = _factory.CreateDbContext();
         Customer customerFound = await db.Customers
             .FirstOrDefaultAsync(c => c.Email.Equals(email)) ?? throw new UnauthorizedAccessException("The requested user was not found."); 
-        return customerFound;
+        return customerFound.Salt;
     }
     public async Task<int> SignIn(string email, string password)
     {

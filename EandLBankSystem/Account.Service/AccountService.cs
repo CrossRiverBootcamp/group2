@@ -20,9 +20,11 @@ public class AccountService:IAccountService
         _mapper = ConfigureAutoMapper();
         _passwordHash = passwordHash;
     }
-    public Task<int> SignIn(string email, string password)
+    public async Task<int> SignIn(string email, string password)
     {
-        return _accountDal.SignIn(email, password);
+        string salt = await _accountDal.getCustomerByEmail(email);
+        password = _passwordHash.HashPassword(password, salt, N_ITERATIONS, N_HASH);
+        return await _accountDal.SignIn(email, password);
     }
     public async Task<AccountModel> GetAccountInfo(int id)
     {
