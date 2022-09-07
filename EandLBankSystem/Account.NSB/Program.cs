@@ -1,5 +1,4 @@
-﻿
-using Account.Messages.Commands;
+﻿using Account.Messages.Commands;
 using Account.Service;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
@@ -45,15 +44,20 @@ class Program
 
         var dialect = persistence.SqlDialect<SqlDialect.MsSqlServer>();
 
-        //var conventions = endpointConfiguration.Conventions();
-        //conventions.DefiningEventsAs(type => type.Namespace == "Subscriber.Messages.Events");
+        var conventions = endpointConfiguration.Conventions();
+        conventions.DefiningCommandsAs(type => type.Namespace == "Account.Messages.Commands");
+        conventions.DefiningEventsAs(type => type.Namespace == "Transaction.Messages.Events");
 
         #endregion
+
+        #region Adding services to the container.
 
         var containerSettings = endpointConfiguration.UseContainer(new DefaultServiceProviderFactory());
         containerSettings.ServiceCollection.AddServicesExtention(databaseConnection);
         containerSettings.ServiceCollection.AddScoped<IAccountService, AccountService>();
         containerSettings.ServiceCollection.AddAutoMapper(typeof(Program));
+
+        #endregion
 
         var endpointInstance = await Endpoint.Start(endpointConfiguration).ConfigureAwait(false);
 

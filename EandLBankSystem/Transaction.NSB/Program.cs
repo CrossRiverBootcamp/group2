@@ -1,16 +1,12 @@
-﻿
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NServiceBus;
-using NServiceBus.Logging;
 using Transaction.Service;
 
 class Program
 {
-    static ILog log = LogManager.GetLogger<Program>();
-
     static async Task Main()
     {
         var configuration = new ConfigurationBuilder()
@@ -45,15 +41,22 @@ class Program
         transport.ConnectionString(rabbitMQConnection);
         transport.UseConventionalRoutingTopology(QueueType.Quorum);
 
-        //var conventions = endpointConfiguration.Conventions();
-        //conventions.DefiningEventsAs(type => type.Namespace == "Subscriber.Messages.Events");
+        var conventions = endpointConfiguration.Conventions();
+        conventions.DefiningCommandsAs(type => type.Namespace == "Account.Messages.Commands");
+        conventions.DefiningCommandsAs(type => type.Namespace == "Transaction.Messages.Commands");
+        conventions.DefiningEventsAs(type => type.Namespace == "Transaction.Messages.Events");
+
 
         #endregion
+
+        #region Adding services to the container.
 
         var containerSettings = endpointConfiguration.UseContainer(new DefaultServiceProviderFactory());
         containerSettings.ServiceCollection.AddServicesExtention(databaseConnection);
         containerSettings.ServiceCollection.AddScoped<ITransactionService, TransactionService>();
         containerSettings.ServiceCollection.AddAutoMapper(typeof(Program));
+
+        #endregion
 
         var endpointInstance = await Endpoint.Start(endpointConfiguration).ConfigureAwait(false);
 

@@ -1,13 +1,7 @@
-﻿using NServiceBus;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Transaction.Messages.Events;
 
-public class TransactionSagaStarted:IEvent
+public class TransactionSagaStarted
 {
     public int TransactionId { get; set; }
     public int FromAccount { get; set; }
