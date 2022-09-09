@@ -1,11 +1,14 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { LOCALE_ID, NgModule } from '@angular/core';
+import { CommonModule, registerLocaleData } from '@angular/common';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AccountService } from '../services/account.service';
+import { AccountService } from '../services/Account.service';
 import { AccoutContainerComponent } from './accout-container/accout-container.component';
 import { AccountInfoComponent } from './account-info/account-info.component';
+import localeHe from '@angular/common/locales/he';
+
+registerLocaleData(localeHe);
 
 @NgModule({
   declarations: [
@@ -15,7 +18,7 @@ import { AccountInfoComponent } from './account-info/account-info.component';
     AccountInfoComponent,
   ],
   imports: [CommonModule, ReactiveFormsModule, FormsModule],
-  providers: [AccountService],
+  providers: [AccountService, { provide: LOCALE_ID, useValue: 'he_IL' }],
   exports: [AccoutContainerComponent, AccountInfoComponent],
 })
 export class AccountModule {}
