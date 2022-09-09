@@ -1,10 +1,51 @@
+using Account.Messages.Commands;
 using Account.Service;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using NServiceBus;
+
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("AccountDatabase");
+#region NServiceBus configurations
 
+var rabbitMQConnection = builder.Configuration.GetConnectionString("RabbitMQ");
+var queueName = builder.Configuration.GetSection("Queues:AccountAPIQueue:Name").Value;
+var NSBConnection = builder.Configuration.GetConnectionString("NSBConnection");
+
+builder.Host.UseNServiceBus(hostBuilderContext =>
+{
+    var endpointConfiguration = new EndpointConfiguration(queueName);
+
+    endpointConfiguration.EnableInstallers();
+    endpointConfiguration.EnableOutbox();
+
+    var persistence = endpointConfiguration.UsePersistence<SqlPersistence>();
+    persistence.ConnectionBuilder(
+        connectionBuilder: () =>
+        {
+            return new SqlConnection(NSBConnection);
+        });
+    var dialect = persistence.SqlDialect<SqlDialect.MsSqlServer>();
+
+    var transport = endpointConfiguration.UseTransport<RabbitMQTransport>();
+    transport.ConnectionString(rabbitMQConnection);
+    transport.UseConventionalRoutingTopology(QueueType.Quorum);
+
+    var routing = transport.Routing();
+    routing.RouteToEndpoint(typeof(FinishTransactionSaga), "Transaction");
+
+    var conventions = endpointConfiguration.Conventions();
+    conventions.DefiningCommandsAs(type => type.Namespace == "Account.Messages.Commands");
+    conventions.DefiningEventsAs(type => type.Namespace == "Transaction.Messages.Events");
+
+
+
+    return endpointConfiguration;
+});
+
+#endregion
 #region Adding services to the container.
 
 builder.Services.AddServicesExtention(connectionString);

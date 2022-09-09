@@ -1,3 +1,4 @@
+using Microsoft.Data.SqlClient;
 using Microsoft.OpenApi.Models;
 using NServiceBus;
 using Transaction.Messages.Commands;
@@ -10,11 +11,22 @@ var databaseConnection = builder.Configuration.GetConnectionString("TransactionD
 
 var rabbitMQConnection = builder.Configuration.GetConnectionString("RabbitMQ");
 var queueName = builder.Configuration.GetSection("Queues:TransactionAPIQueue:Name").Value;
+var NSBConnection = builder.Configuration.GetConnectionString("NSBConnection");
 
 builder.Host.UseNServiceBus(hostBuilderContext =>
 {
     var endpointConfiguration = new EndpointConfiguration(queueName);
-    endpointConfiguration.SendOnly();
+
+    endpointConfiguration.EnableInstallers();
+    endpointConfiguration.EnableOutbox();
+
+    var persistence = endpointConfiguration.UsePersistence<SqlPersistence>();
+    persistence.ConnectionBuilder(
+        connectionBuilder: () =>
+        {
+            return new SqlConnection(NSBConnection);
+        });
+    var dialect = persistence.SqlDialect<SqlDialect.MsSqlServer>();
 
     var transport = endpointConfiguration.UseTransport<RabbitMQTransport>();
     transport.ConnectionString(rabbitMQConnection);
@@ -27,6 +39,8 @@ builder.Host.UseNServiceBus(hostBuilderContext =>
     conventions.DefiningCommandsAs(type => type.Namespace == "Account.Messages.Commands");
     conventions.DefiningCommandsAs(type => type.Namespace == "Transaction.Messages.Commands");
     conventions.DefiningEventsAs(type => type.Namespace == "Transaction.Messages.Events");
+
+
 
     return endpointConfiguration;
 });

@@ -1,6 +1,7 @@
 ﻿using Account.Service.Models;
 using Account.WebAPI.DTO;
 using AutoMapper;
+using Transaction.Messages.Events;
 
 namespace Account.WebAPI;
 
@@ -20,6 +21,8 @@ public class AutoMapper : Profile
         CreateMap<CustomerModel, SignUpDTO>()
                .ReverseMap();
 
+        CreateMap<TransactionSagaStarted, TransactionModel>()
+               .ReverseMap();
     }
 }
 
