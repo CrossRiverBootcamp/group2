@@ -9,7 +9,7 @@ namespace Transaction.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.RenameColumn(
-                name: "Amount",
+                name: "Ammount",
                 table: "Transactions",
                 newName: "Amount");
         }
@@ -19,7 +19,7 @@ namespace Transaction.Data.Migrations
             migrationBuilder.RenameColumn(
                 name: "Amount",
                 table: "Transactions",
-                newName: "Amount");
+                newName: "Ammount");
         }
     }
 }
