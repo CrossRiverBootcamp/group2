@@ -5,15 +5,14 @@ import { Observable } from 'rxjs';
 import { Transaction } from '../models/Transaction';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TransactionService {
-  private base = 'https://localhost:7007/api/transaction';
+  private base = 'https://localhost:7265/api/transaction';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  addNewTransaction(newTransaction:Transaction):Observable<boolean>{
-    return this.http.post<boolean>(`${this.base}`,newTransaction);
+  addNewTransaction(newTransaction: Transaction): Observable<boolean> {
+    return this.http.post<boolean>(`${this.base}`, newTransaction);
   }
-
- }
+}
