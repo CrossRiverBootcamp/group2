@@ -42,6 +42,7 @@ export class LoginComponent {
         this.userService.setAccountID(res);
         this.route.navigate(['']);
         this.loading = false;
+        location.reload();
       },
       (err) => {
         console.log(err);

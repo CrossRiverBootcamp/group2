@@ -14,11 +14,6 @@ public class AccountService:IAccountService
     private static readonly int N_HASH = 9;
     private static readonly int N_ITERATIONS = 900;
 
-    public AccountService(IAccountDal accountDal)
-    {
-        _accountDal = accountDal;
-        _mapper = ConfigureAutoMapper();
-    }
     public AccountService(IAccountDal accountDal , IPasswordHash passwordHash)
     {
         _accountDal = accountDal;

@@ -1,4 +1,3 @@
-import { formatDate } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Account } from 'src/app/models/Account';
@@ -14,6 +13,7 @@ export class AccountInfoComponent implements OnInit {
   showError: boolean = false;
   account?: Account;
   loading: boolean = false;
+
   constructor(
     private accountService: AccountService,
     private userService: UserService,
@@ -32,6 +32,7 @@ export class AccountInfoComponent implements OnInit {
         (err) => {
           console.log(err);
           this.showError = true;
+          this.loading = false;
         }
       );
   }

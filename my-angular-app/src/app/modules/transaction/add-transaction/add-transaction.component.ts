@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { TransactionService } from 'src/app/services/transaction.service';
 import { Transaction } from 'src/app/models/Transaction';
@@ -18,6 +18,7 @@ export class AddTransactionComponent {
   showError: boolean = false;
   error: string = '';
   showSuccess: boolean = false;
+  loading: boolean = false;
 
   transactionForm: FormGroup = new FormGroup({
     accountId: new FormControl<number | null>(null, Validators.required),
@@ -34,6 +35,7 @@ export class AddTransactionComponent {
 
   addNewTransaction() {
     if (this.setError()) return;
+    this.loading = true;
 
     let newTransaction: Transaction = {
       fromAccount: this._userService.getAccountID() ?? -1,
@@ -42,11 +44,15 @@ export class AddTransactionComponent {
     };
 
     this._transactionService.addNewTransaction(newTransaction).subscribe(
-      () => (this.showSuccess = true),
+      () => {
+        this.showSuccess = true;
+        this.loading = false;
+      },
       (err) => {
         this.error = 'Server error has accured. pleast try again later.';
         this.showError = true;
         console.error(err);
+        this.loading = false;
       }
     );
   }

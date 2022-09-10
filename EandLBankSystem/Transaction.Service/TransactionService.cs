@@ -12,11 +12,6 @@ public class TransactionService : ITransactionService
     private readonly IMapper _mapper;
     private readonly IMessageSession _messageSession;
 
-    public TransactionService(ITransactionDal transactionDal)
-    {
-        _transactionDal = transactionDal;
-    }
-
     public TransactionService(ITransactionDal transactionDal, IMessageSession messageSession)
     {
         _transactionDal = transactionDal;

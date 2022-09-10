@@ -1,10 +1,10 @@
 element.style {
     padding-left: 0px;
 }
-  .documentation footer {
+.documentation footer {
     padding-left: 0;
 }
-  @media (max-width: 1440px){
+@media (max-width: 1440px){
   .fixed-sn .double-nav, .fixed-sn main, .fixed-sn footer {
       padding-left: 0;
   }
@@ -37,6 +37,7 @@ article, aside, figcaption, figure, footer, header, hgroup, main, nav, section {
 // user agent stylesheet
 footer {
     display: block;
+    margin-top: 40px;
 }
 
 a{
