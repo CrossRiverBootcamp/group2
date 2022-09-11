@@ -1,5 +1,5 @@
-export interface Transaction{
-    fromAccount: number;
-    toAccount:number;
-    amount:number;
+export interface Transaction {
+  fromAccount: number;
+  toAccount: number;
+  amount: number;
 }

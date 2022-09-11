@@ -3,7 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Login } from 'src/app/models/Login';
 import { Register } from 'src/app/models/Register';
-import { AccountService } from 'src/app/services/account.service';
+import { AccountService } from 'src/app/services/Account.service';
 import { UserService } from 'src/app/services/user.service';
 import { MustMatch } from '../helpers/MustMatch.validator';
 

@@ -2,11 +2,13 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
-  // {
-  //   path: 'subscriber',
-  //   loadChildren: () =>
-  //     import('./subscriber/subscriber.module').then((m) => m.SubscriberModule),
-  // },
+  {
+    path: 'transaction',
+    loadChildren: () =>
+      import('./transaction/transaction.module').then(
+        (m) => m.TransactionModule
+      ),
+  },
 ];
 
 @NgModule({

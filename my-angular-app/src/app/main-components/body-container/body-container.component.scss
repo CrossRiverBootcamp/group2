@@ -1,0 +1,8 @@
+app-my-footer{
+    position: absolute;
+    bottom: -300px;
+    width: 100%;
+    @media (max-width: 768px){
+        bottom: -920px;
+    }
+}

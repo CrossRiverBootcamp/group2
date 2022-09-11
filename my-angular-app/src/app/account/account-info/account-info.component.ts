@@ -1,6 +1,8 @@
+import { formatDate } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Account } from 'src/app/models/Account';
-import { AccountService } from 'src/app/services/account.service';
+import { AccountService } from 'src/app/services/Account.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -14,7 +16,8 @@ export class AccountInfoComponent implements OnInit {
   loading: boolean = false;
   constructor(
     private accountService: AccountService,
-    private userService: UserService
+    private userService: UserService,
+    private route: Router
   ) {}
 
   ngOnInit(): void {
@@ -24,7 +27,6 @@ export class AccountInfoComponent implements OnInit {
       this.accountService.getAccountInfo(accountID).subscribe(
         (res) => {
           this.account = res;
-          this.userService.setUser(res);
           this.loading = false;
         },
         (err) => {
@@ -36,5 +38,7 @@ export class AccountInfoComponent implements OnInit {
 
   logout() {
     this.userService.logOut();
+    location.reload();
+    this.route.navigate(['']);
   }
 }

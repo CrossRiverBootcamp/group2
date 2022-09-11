@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { Login } from 'src/app/models/Login';
-import { AccountService } from 'src/app/services/account.service';
+import { AccountService } from 'src/app/services/Account.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
