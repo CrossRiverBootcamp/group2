@@ -4,11 +4,10 @@ namespace Account.Data;
 
 public interface IAccountDal
 {
-    Task<string> getCustomerByEmail(string email);
-    Task<int> SignIn(string email, string password);
-    Task<Entities.Account> GetAccountInfo(int id);
-    Task<bool> SignUp(Customer customer);
-    Task TransferAmount(int FromAccount, int toAccount, int amount);
-
+    Task<string> getCustomerByEmailAsync(string email);
+    Task<int> SignInAsync(string email, string password);
+    Task<Entities.Account> GetAccountInfoAsync(int id);
+    Task<bool> SignUpAsync(Customer customer);
+    Task TransferAmountAsync(int FromAccount, int toAccount, int amount);
 }
 

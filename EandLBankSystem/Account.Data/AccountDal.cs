@@ -1,27 +1,30 @@
 ﻿using Account.Data.Entities;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Account.Data;
 
 public class AccountDal:IAccountDal
 {
+    private readonly ILogger<AccountDal> _logger;
     private IDbContextFactory<AccountContext> _factory;
 
-    public AccountDal(IDbContextFactory<AccountContext> factory)
+    public AccountDal(IDbContextFactory<AccountContext> factory , ILogger<AccountDal> logger)
     {
+        _logger = logger;
         _factory = factory ?? throw new ArgumentNullException(nameof(factory));
         using var db = _factory.CreateDbContext();
         db.Database.Migrate();
     }
-    public async Task<string> getCustomerByEmail(string email)
+    public async Task<string> getCustomerByEmailAsync(string email)
     {
         using var db = _factory.CreateDbContext();
         Customer customerFound = await db.Customers
             .FirstOrDefaultAsync(c => c.Email.Equals(email)) ?? throw new UnauthorizedAccessException("The requested user was not found."); 
         return customerFound.Salt;
     }
-    public async Task<int> SignIn(string email, string password)
+    public async Task<int> SignInAsync(string email, string password)
     {
         using var db = _factory.CreateDbContext();
         Customer customerFound = await db.Customers
@@ -31,7 +34,7 @@ public class AccountDal:IAccountDal
             .FirstOrDefaultAsync(a => a.CustomerId == customerFound.Id) ?? throw new Exception("Internal Server Error.");
         return accountFound.Id;
     }
-    public async Task<Entities.Account> GetAccountInfo(int id)
+    public async Task<Entities.Account> GetAccountInfoAsync(int id)
     {
         using var db = _factory.CreateDbContext();
         Entities.Account accountFound = await db.Accounts
@@ -40,9 +43,9 @@ public class AccountDal:IAccountDal
         return accountFound;
     }
 
-    public async Task<bool> SignUp(Customer customer)
+    public async Task<bool> SignUpAsync(Customer customer)
     {
-        if(await EmailAddressExists(customer.Email))  
+        if(await EmailAddressExistsAsync(customer.Email))  
             throw new ArgumentException(nameof(customer));
         using var db = _factory.CreateDbContext();
         await db.Customers.AddAsync(customer);
@@ -55,19 +58,20 @@ public class AccountDal:IAccountDal
         {
             await db.SaveChangesAsync();
         }
-        catch
+        catch(Exception ex)
         {
+            _logger.LogError(ex.Message, ex.StackTrace);
             return false;
         }
         return true;
     }
-    public async Task<bool> EmailAddressExists(string email)
+    public async Task<bool> EmailAddressExistsAsync(string email)
     {
        using var db = _factory.CreateDbContext();
        return await db.Customers.AnyAsync(c => c.Email.Equals(email));  
     }
 
-    public async Task TransferAmount(int fromAccount, int toAccount, int amount)
+    public async Task TransferAmountAsync(int fromAccount, int toAccount, int amount)
     {
         using var db = _factory.CreateDbContext();
         var from = await db.Accounts.FirstOrDefaultAsync(a => a.Id == fromAccount);

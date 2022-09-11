@@ -4,7 +4,7 @@ namespace Transaction.Service
 {
     public interface ITransactionService
     {
-        Task<bool> PostTransaction(TransactionModel transactionModel);
-        Task UpdateTransactionStatus(int transactionId, bool success, string? failureMessage);
+        Task<bool> PostTransactionAsync(TransactionModel transactionModel);
+        Task UpdateTransactionStatusAsync(int transactionId, bool success, string? failureMessage);
     }
 }
