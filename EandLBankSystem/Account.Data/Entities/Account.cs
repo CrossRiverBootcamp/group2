@@ -11,7 +11,7 @@ public class Account
     [Required, DataType(DataType.Date)]
     public DateTime OpenDate { get; set; }
     [Required]
-    public decimal Balance { get; set; } = 1000;
+    public int Balance { get; set; } = 1000;
     [Required]
     public int CustomerId { get; set; }
     [ForeignKey("CustomerId")]

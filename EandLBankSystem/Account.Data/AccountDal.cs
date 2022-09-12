@@ -1,5 +1,4 @@
 ﻿using Account.Data.Entities;
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -87,6 +86,29 @@ public class AccountDal:IAccountDal
         to.Balance += amount;
 
         await db.SaveChangesAsync();
+        
     }
+
+    public async Task AddNewOperationAsync(Operation operationHistoryfrom, Operation operationHistoryfromTo)
+    {
+        using var db = _factory.CreateDbContext();
+        await db.Operations.AddAsync(operationHistoryfromTo);
+        await db.Operations.AddAsync(operationHistoryfrom);
+
+        await db.SaveChangesAsync();
+    }
+
+    public async Task<List<(Operation, int)>> GetOperationsByAccountIdAsync(int accountId, int position , int pageSize)
+    {
+        using var db = _factory.CreateDbContext();
+        return (List<(Operation, int)>)
+            (
+                from op1 in db.Operations
+                join op2 in db.Operations on op1.TransactionId equals op2.TransactionId
+                where op1.AccountId == accountId
+                select new { Operation = op1, otherId = op2.Id }
+           );
+    }
+
 }
 

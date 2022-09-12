@@ -22,7 +22,11 @@ public class AutoMapper : Profile
                .ReverseMap();
 
         CreateMap<TransactionSagaStarted, TransactionModel>()
+            .ForMember(des => des.OperationTime, opts => opts
+                        .MapFrom(any=> DateTime.UtcNow))
                .ReverseMap();
+        CreateMap<OperationModel, GetOperationsDTO>()
+            .ReverseMap();
     }
 }
 

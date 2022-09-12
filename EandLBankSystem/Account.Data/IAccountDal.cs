@@ -9,5 +9,7 @@ public interface IAccountDal
     Task<Entities.Account> GetAccountInfoAsync(int id);
     Task<bool> SignUpAsync(Customer customer);
     Task TransferAmountAsync(int FromAccount, int toAccount, int amount);
+    Task AddNewOperationAsync(Operation operationHistoryfrom, Operation operationHistoryfromTo);
+    Task<List<(Operation, int)>> GetOperationsByAccountIdAsync(int accountId, int position, int pageSize);
 }
 

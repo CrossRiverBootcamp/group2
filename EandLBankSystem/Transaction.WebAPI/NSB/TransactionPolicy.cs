@@ -36,7 +36,7 @@ public class TransactionPolicy : Saga<TransactionPolicyData>, IAmStartedByMessag
         log.Info($"Received FinishTransactionSaga, Transaction = {message.TransactionId}");
         try
         {
-            await _transactionService.UpdateTransactionStatus(message.TransactionId, message.Success, message.FailureMessage);
+            await _transactionService.UpdateTransactionStatusAsync(message.TransactionId, message.Success, message.FailureMessage);
         }
         catch
         {

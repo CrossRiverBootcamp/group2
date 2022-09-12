@@ -22,7 +22,7 @@ namespace Transaction.WebAPI.Controllers
         public async Task<ActionResult<bool>> PostTransaction(PostTransactionDTO postTransactionDTO)
         {
 
-            var result = await _transactionService.PostTransaction(_mapper.Map<TransactionModel>(postTransactionDTO));
+            var result = await _transactionService.PostTransactionAsync(_mapper.Map<TransactionModel>(postTransactionDTO));
             return result? Ok(result): BadRequest(result);
         }
     }

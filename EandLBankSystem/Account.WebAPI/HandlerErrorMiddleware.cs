@@ -1,5 +1,4 @@
-﻿using CoronaApp.Api.Logging;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
@@ -43,7 +42,7 @@ namespace CoronaApp.Api.Middlewares
                     _ => HttpStatusCode.InternalServerError,
                 };
                 response.StatusCode = (int)statusCode;
-                response.WriteAsync(ex.Message)
+                response.WriteAsync(ex.Message);
 
                 _logger.Log(LogLevel.Error, ex.Message, response.StatusCode ,ex.StackTrace);
             }

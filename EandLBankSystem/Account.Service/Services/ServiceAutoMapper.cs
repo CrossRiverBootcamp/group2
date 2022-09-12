@@ -13,7 +13,8 @@ public class ServiceAutoMapper : Profile
        
         CreateMap<Customer, CustomerModel>()
                .ReverseMap();
-        
+        CreateMap<Operation, OperationModel>()
+             .ReverseMap();
 
     }
 }

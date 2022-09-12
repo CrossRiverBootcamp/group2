@@ -27,7 +27,7 @@ public class TransactionSagaStartedHandler : IHandleMessages<TransactionSagaStar
 
         try
         {
-            await _accountService.ExecuteTransaction(_mapper.Map<TransactionModel>(message));
+            await _accountService.ExecuteTransactionAsync(_mapper.Map<TransactionModel>(message));
             success = true;
             log.Info($"Transaction {message.TransactionId} has completed successfuly.");
         }

@@ -6,4 +6,5 @@ public class TransactionModel
     public int FromAccount { get; set; }
     public int ToAccount { get; set; }
     public int Amount { get; set; }
+    public DateTime OperationTime { get; set; }
 }
