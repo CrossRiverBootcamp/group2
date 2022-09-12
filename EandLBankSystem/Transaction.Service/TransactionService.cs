@@ -19,10 +19,10 @@ public class TransactionService : ITransactionService
         _messageSession = messageSession;
     }
 
-    public async Task<bool> PostTransaction(TransactionModel transactionModel)
+    public async Task<bool> PostTransactionAsync(TransactionModel transactionModel)
     {
         try {    
-            var transactionId = await _transactionDal.PostTransaction(_mapper.Map<Data.Entities.Transaction>(transactionModel));
+            var transactionId = await _transactionDal.PostTransactionAsync(_mapper.Map<Data.Entities.Transaction>(transactionModel));
             StartTransactionSaga startTransactionSaga = new()
             {
                 TransactionId = transactionId,
@@ -39,9 +39,9 @@ public class TransactionService : ITransactionService
         }
     }
 
-    public async Task UpdateTransactionStatus(int transactionId, bool success, string? failureMessage)
+    public async Task UpdateTransactionStatusAsync(int transactionId, bool success, string? failureMessage)
     {
-        await _transactionDal.UpdateTransactionStatus(transactionId, success, failureMessage);
+        await _transactionDal.UpdateTransactionStatusAsync(transactionId, success, failureMessage);
     }
 
 

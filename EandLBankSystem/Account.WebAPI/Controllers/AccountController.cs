@@ -21,20 +21,20 @@ public class AccountController : ControllerBase
     [HttpPost("Login/")]
     public async Task<ActionResult<int>> SignIn(SignInDTO signInDTO)
     {
-        var res = await _accountService.SignIn(signInDTO.Email, signInDTO.Password);
+        var res = await _accountService.SignInAsync(signInDTO.Email, signInDTO.Password);
         return Ok(res);
        
     }
     [HttpGet("Account/{id}")]
     public async Task<ActionResult<GetAccountDTO>> GetAccountInfo(int id)
     {
-        return Ok(_mapper.Map<GetAccountDTO>(await _accountService.GetAccountInfo(id)));
+        return Ok(_mapper.Map<GetAccountDTO>(await _accountService.GetAccountInfoAsync(id)));
     }
 
     [HttpPost("SignUp/")]
     public async Task<ActionResult<bool>> SignUp([FromBody] SignUpDTO signUpDTO)
     {
-        bool result = await _accountService.SignUp(_mapper.Map<CustomerModel>(signUpDTO));
+        bool result = await _accountService.SignUpAsync(_mapper.Map<CustomerModel>(signUpDTO));
         return result ? Ok(result) : BadRequest(result);
     }
 }

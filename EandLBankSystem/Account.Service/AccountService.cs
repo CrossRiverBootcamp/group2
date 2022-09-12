@@ -21,28 +21,28 @@ public class AccountService:IAccountService
         _passwordHash = passwordHash;
     }
    
-    public async Task<int> SignIn(string email, string password)
+    public async Task<int> SignInAsync(string email, string password)
     {
-        string salt = await _accountDal.getCustomerByEmail(email);
+        string salt = await _accountDal.getCustomerByEmailAsync(email);
         password = _passwordHash.HashPassword(password, salt, N_ITERATIONS, N_HASH);
-        return await _accountDal.SignIn(email, password);
+        return await _accountDal.SignInAsync(email, password);
     }
-    public async Task<AccountModel> GetAccountInfo(int id)
+    public async Task<AccountModel> GetAccountInfoAsync(int id)
     {
-         return _mapper.Map<AccountModel>(await _accountDal.GetAccountInfo(id));
+         return _mapper.Map<AccountModel>(await _accountDal.GetAccountInfoAsync(id));
     }
-    public Task<bool> SignUp(CustomerModel customerModel)
+    public Task<bool> SignUpAsync(CustomerModel customerModel)
     {
         string salt = _passwordHash.GenerateSalt(N_SALT);
         customerModel.Password = _passwordHash.HashPassword(customerModel.Password, salt , N_ITERATIONS , N_HASH);
         Customer customer = _mapper.Map<Customer>(customerModel);
         customer.Salt = salt;
-        return _accountDal.SignUp(customer);
+        return _accountDal.SignUpAsync(customer);
     }
-    public async Task ExecuteTransaction(TransactionModel transactionModel)
+    public async Task ExecuteTransactionAsync(TransactionModel transactionModel)
     {
         try {       
-            await _accountDal.TransferAmount(transactionModel.FromAccount, transactionModel.ToAccount, transactionModel.Amount);
+            await _accountDal.TransferAmountAsync(transactionModel.FromAccount, transactionModel.ToAccount, transactionModel.Amount);
         }
         catch
         {

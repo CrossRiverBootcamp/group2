@@ -19,7 +19,7 @@ public class TransactionDal : ITransactionDal
         db.Database.Migrate();
     }
 
-    public async Task<int> PostTransaction(Entities.Transaction transaction)
+    public async Task<int> PostTransactionAsync(Entities.Transaction transaction)
     {
         using var db = _factory.CreateDbContext();
         await db.Transactions.AddAsync(transaction);
@@ -27,7 +27,7 @@ public class TransactionDal : ITransactionDal
         return transaction.Id;
     }
 
-    public async Task UpdateTransactionStatus(int transactionId, bool success, string? failureMessage)
+    public async Task UpdateTransactionStatusAsync(int transactionId, bool success, string? failureMessage)
     {
         using var db = _factory.CreateDbContext();
         var transaction = await db.Transactions.FirstOrDefaultAsync(t => t.Id == transactionId);
