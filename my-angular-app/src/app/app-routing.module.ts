@@ -5,8 +5,15 @@ const routes: Routes = [
   {
     path: 'transaction',
     loadChildren: () =>
-      import('./transaction/transaction.module').then(
+      import('./modules/transaction/transaction.module').then(
         (m) => m.TransactionModule
+      ),
+  },
+  {
+    path: 'operation',
+    loadChildren: () =>
+      import('./modules/operation/operation.module').then(
+        (m) => m.OperationModule
       ),
   },
 ];

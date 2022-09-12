@@ -1,0 +1,40 @@
+.navbar-login
+{
+    width: 305px;
+    padding: 10px;
+    padding-bottom: 0px;
+}
+
+.navbar-right{
+    max-width: 305px;
+}
+
+
+.navbar-login-session
+{
+    padding: 10px;
+    padding-bottom: 0px;
+    padding-top: 0px;
+}
+
+.icon-size
+{
+    font-size: 87px;
+}
+
+.s{
+    margin: 0px;
+}
+
+small{
+    color: var(--bs-link-color);
+}
+
+small:hover{
+    opacity: 50%;
+    cursor: pointer;
+}
+
+li {
+    list-style-type: none;
+}
