@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, Input, OnInit } from '@angular/core';
 import { Account } from 'src/app/models/Account';
 import { AccountService } from 'src/app/services/Account.service';
 import { UserService } from 'src/app/services/user.service';
@@ -13,18 +12,18 @@ export class AccountInfoComponent implements OnInit {
   showError: boolean = false;
   account?: Account;
   loading: boolean = false;
+  @Input() accountID?: number;
+  @Input() private?: boolean;
 
   constructor(
     private accountService: AccountService,
-    private userService: UserService,
-    private route: Router
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
     this.loading = true;
-    let accountID = this.userService.getAccountID();
-    if (accountID)
-      this.accountService.getAccountInfo(accountID).subscribe(
+    if (this.accountID)
+      this.accountService.getAccountInfo(this.accountID).subscribe(
         (res) => {
           this.account = res;
           this.loading = false;
@@ -39,7 +38,5 @@ export class AccountInfoComponent implements OnInit {
 
   logout() {
     this.userService.logOut();
-    location.reload();
-    this.route.navigate(['']);
   }
 }

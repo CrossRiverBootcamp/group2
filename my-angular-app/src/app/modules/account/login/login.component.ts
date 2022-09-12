@@ -1,3 +1,4 @@
+import { HttpStatusCode } from '@angular/common/http';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { Login } from 'src/app/models/Login';
@@ -38,7 +39,6 @@ export class LoginComponent {
 
     this.accountServise.login(login).subscribe(
       (res) => {
-        debugger;
         this.userService.setAccountID(res);
         this.route.navigate(['']);
         this.loading = false;
@@ -48,6 +48,7 @@ export class LoginComponent {
         console.log(err);
         this.errors = true;
         this.loading = false;
+        alert(err.status);
       }
     );
   }
