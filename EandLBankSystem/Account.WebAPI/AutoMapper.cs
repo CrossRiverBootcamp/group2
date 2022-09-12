@@ -25,6 +25,7 @@ public class AutoMapper : Profile
             .ForMember(des => des.OperationTime, opts => opts
                         .MapFrom(any=> DateTime.UtcNow))
                .ReverseMap();
+
         CreateMap<OperationModel, GetOperationsDTO>()
             .ReverseMap();
     }

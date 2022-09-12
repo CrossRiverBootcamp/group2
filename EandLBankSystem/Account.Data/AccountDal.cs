@@ -8,7 +8,6 @@ public class AccountDal:IAccountDal
 {
     private readonly ILogger<AccountDal> _logger;
     private IDbContextFactory<AccountContext> _factory;
-
     public AccountDal(IDbContextFactory<AccountContext> factory , ILogger<AccountDal> logger)
     {
         _logger = logger;
@@ -16,6 +15,7 @@ public class AccountDal:IAccountDal
         using var db = _factory.CreateDbContext();
         db.Database.Migrate();
     }
+
     public async Task<string> getCustomerByEmailAsync(string email)
     {
         using var db = _factory.CreateDbContext();
@@ -41,7 +41,6 @@ public class AccountDal:IAccountDal
             .FirstOrDefaultAsync() ?? throw new KeyNotFoundException(nameof(id));
         return accountFound;
     }
-
     public async Task<bool> SignUpAsync(Customer customer)
     {
         if(await EmailAddressExistsAsync(customer.Email))  
@@ -69,7 +68,6 @@ public class AccountDal:IAccountDal
        using var db = _factory.CreateDbContext();
        return await db.Customers.AnyAsync(c => c.Email.Equals(email));  
     }
-
     public async Task TransferAmountAsync(int fromAccount, int toAccount, int amount)
     {
         using var db = _factory.CreateDbContext();
@@ -85,10 +83,8 @@ public class AccountDal:IAccountDal
         from.Balance -= amount;
         to.Balance += amount;
 
-        await db.SaveChangesAsync();
-        
+        await db.SaveChangesAsync();   
     }
-
     public async Task AddNewOperationAsync(Operation operationHistoryfrom, Operation operationHistoryfromTo)
     {
         using var db = _factory.CreateDbContext();
@@ -97,18 +93,24 @@ public class AccountDal:IAccountDal
 
         await db.SaveChangesAsync();
     }
-
-    public async Task<List<(Operation, int)>> GetOperationsByAccountIdAsync(int accountId, int position , int pageSize)
+    public async Task<List<Operation>> GetOperationsByAccountIdAsync(int accountId, int position , int pageSize)
     {
         using var db = _factory.CreateDbContext();
-        return (List<(Operation, int)>)
-            (
-                from op1 in db.Operations
-                join op2 in db.Operations on op1.TransactionId equals op2.TransactionId
-                where op1.AccountId == accountId
-                select new { Operation = op1, otherId = op2.Id }
-           );
+
+        var sqlQuery =
+            from op1 in db.Operations
+            join op2 in db.Operations on op1.TransactionId equals op2.TransactionId
+            where op1.AccountId == accountId && op1.Id != op2.Id
+            orderby op1.OperationTime descending
+            select new Operation{ Id = op1.Id
+          , AccountId = op2.AccountId
+          , TransactionId = op1.TransactionId
+          , Credit = op1.Credit
+          , TransactionAmount = op1.TransactionAmount
+          , Balance = op1.Balance
+          , OperationTime = op1.OperationTime }
+        ;
+
+        return sqlQuery.Skip(position).Take(pageSize).ToList();
     }
-
 }
-

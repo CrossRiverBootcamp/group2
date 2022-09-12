@@ -19,7 +19,7 @@ namespace Transaction.WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<bool>> PostTransaction(PostTransactionDTO postTransactionDTO)
+        public async Task<ActionResult<bool>> PostTransactionAsync(PostTransactionDTO postTransactionDTO)
         {
 
             var result = await _transactionService.PostTransactionAsync(_mapper.Map<TransactionModel>(postTransactionDTO));

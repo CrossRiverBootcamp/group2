@@ -12,17 +12,19 @@ public class TransactionSagaStartedHandler : IHandleMessages<TransactionSagaStar
 {
     private readonly IAccountService _accountService;
     private readonly IMapper _mapper;
+    private readonly IOperationService _operationService;
     static ILog log = LogManager.GetLogger<TransactionSagaStartedHandler>();
-
-    public TransactionSagaStartedHandler(IAccountService accountService, IMapper mapper)
+    public TransactionSagaStartedHandler(IAccountService accountService, IMapper mapper, IOperationService operationService)
     {
         _accountService = accountService;
         _mapper = mapper;
+        _operationService = operationService;
     }
+
     public async Task Handle(TransactionSagaStarted message, IMessageHandlerContext context)
     {
         string failureMessage = null;
-        bool success = false;
+        bool success;
         log.Info($"Transaction {message.TransactionId} has recieved at endpoint.");
 
         try
@@ -36,6 +38,18 @@ public class TransactionSagaStartedHandler : IHandleMessages<TransactionSagaStar
             failureMessage = e.Message;
             success = false;
             log.Error($"Transaction {message.TransactionId} has failed due to Exception: " + failureMessage);
+        }
+
+        if (success)
+        {
+            await _operationService.AddNewOperationsHistory(
+                new TransactionModel { 
+                    TransactionId = message.TransactionId,
+                    FromAccount = message.FromAccount,
+                    ToAccount = message.ToAccount,
+                    Amount = message.Amount,
+                    OperationTime = DateTime.UtcNow
+                });
         }
 
         FinishTransactionSaga finishTransactionSaga = new()

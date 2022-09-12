@@ -1,9 +1,7 @@
-﻿
-using Account.Data;
+﻿using Account.Data;
 using Account.Data.Entities;
 using Account.Service.Models;
 using AutoMapper;
-using Transaction.Messages.Commands;
 
 namespace Account.Service;
 
@@ -11,12 +9,10 @@ public class OperationService : IOperationService
 {
     private readonly IAccountDal _accountDal;
     private readonly IMapper _mapper;
-
     public OperationService(IAccountDal accountDal)
     {
         _accountDal = accountDal;
         _mapper = ConfigureAutoMapper();
-
     }
 
     public async Task AddNewOperationsHistory(TransactionModel transactionModel)
@@ -31,6 +27,7 @@ public class OperationService : IOperationService
             Balance = fromAccount.Balance,
             OperationTime = DateTime.UtcNow
         };
+
         Data.Entities.Account toAccount = await _accountDal.GetAccountInfoAsync(transactionModel.ToAccount);
         Operation toOperationHistory = new()
         {
@@ -44,13 +41,10 @@ public class OperationService : IOperationService
 
         await _accountDal.AddNewOperationAsync(fromOperationHistory, toOperationHistory);
     }
-
     public async Task<List<OperationModel>> GetOperationsByAccountIdAsync(int accountId, int position, int pageSize)
     {
-        List<(Operation, int)> l = await _accountDal.GetOperationsByAccountIdAsync(accountId, position, pageSize);
-        List<Operation> ol = (List<Operation>)l.Select(op => op.Item1.Id = op.Item2);
-        return _mapper.Map<List<OperationModel>>(ol);
-
+        List<Operation> l = await _accountDal.GetOperationsByAccountIdAsync(accountId, position, pageSize);
+        return _mapper.Map<List<OperationModel>>(l);
     }
     private static IMapper ConfigureAutoMapper()
     {

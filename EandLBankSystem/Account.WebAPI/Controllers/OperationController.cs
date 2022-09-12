@@ -12,7 +12,6 @@ namespace Account.WebAPI.Controllers
     {
         private readonly IOperationService _operationService;
         private readonly IMapper _mapper;
-
         public OperationController(IOperationService operationService , IMapper mapper)
         {
             _operationService = operationService;
@@ -24,7 +23,5 @@ namespace Account.WebAPI.Controllers
         {
             return Ok(_mapper.Map<List<GetOperationsDTO>>(await _operationService.GetOperationsByAccountIdAsync(accountId, position, pageSize)));
         }
-
-        
     }
 }

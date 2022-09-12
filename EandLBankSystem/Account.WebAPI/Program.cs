@@ -46,10 +46,12 @@ builder.Host.UseNServiceBus(hostBuilderContext =>
 });
 
 #endregion
+
 #region Adding services to the container.
 
 builder.Services.AddServicesExtention(connectionString);
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IOperationService, OperationService>();
 builder.Services.AddScoped<IPasswordHash, PasswordHash>();
 builder.Services.AddAutoMapper(typeof(Program));
 

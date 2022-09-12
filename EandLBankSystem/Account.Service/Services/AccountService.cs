@@ -40,14 +40,8 @@ public class AccountService:IAccountService
         return _accountDal.SignUpAsync(customer);
     }
     public async Task ExecuteTransactionAsync(TransactionModel transactionModel)
-    {
-        try {       
-            await _accountDal.TransferAmountAsync(transactionModel.FromAccount, transactionModel.ToAccount, transactionModel.Amount);
-        }
-        catch
-        {
-            throw;
-        }
+    {      
+        await _accountDal.TransferAmountAsync(transactionModel.FromAccount, transactionModel.ToAccount, transactionModel.Amount);
     }
 
     private static IMapper ConfigureAutoMapper()

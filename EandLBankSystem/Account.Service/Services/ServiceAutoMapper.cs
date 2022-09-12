@@ -13,9 +13,11 @@ public class ServiceAutoMapper : Profile
        
         CreateMap<Customer, CustomerModel>()
                .ReverseMap();
-        CreateMap<Operation, OperationModel>()
-             .ReverseMap();
 
+        CreateMap<Operation, OperationModel>()
+            .ForMember(des => des.SecondSideAccountId, opts => opts
+            .MapFrom(src => src.AccountId))
+            .ReverseMap();
     }
 }
 
