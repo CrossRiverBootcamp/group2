@@ -1,7 +1,7 @@
 export interface Operation {
-  isCredit: boolean;
-  secondSideId: number;
-  amount: number;
+  secondSideAccountId: number;
+  credit: boolean;
+  transactionAmount: number;
   balance: number;
-  date: Date;
+  operationTime: Date;
 }

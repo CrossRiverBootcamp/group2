@@ -12,6 +12,7 @@ import {
   trigger,
 } from '@angular/animations';
 import { Account } from 'src/app/models/Account';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-operations-history',
@@ -30,6 +31,7 @@ import { Account } from 'src/app/models/Account';
 })
 export class OperationsHistoryComponent implements AfterViewInit {
   operationsData: Operation[] = [];
+  visitedPages: number[] = [0];
   pageSize = 5;
   currentPage = 0;
   loading: boolean = false;
@@ -42,7 +44,10 @@ export class OperationsHistoryComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private operationService: OperationService) {}
+  constructor(
+    private operationService: OperationService,
+    private userService: UserService
+  ) {}
 
   ngAfterViewInit(): void {
     this.loadData();
@@ -50,21 +55,30 @@ export class OperationsHistoryComponent implements AfterViewInit {
 
   loadData() {
     this.loading = true;
-    this.operationService.getOperationsDemo().then(
-      (res) => {
-        this.operationsData = res;
-        this.dataSource = new MatTableDataSource(this.operationsData);
-        this.dataSource.paginator = this.paginator;
-        this.paginator.pageIndex = this.currentPage;
-        this.paginator.length = res.length;
-        this.dataSource.sort = this.sort;
-        this.loading = false;
-      },
-      (err) => {
-        console.log(err);
-        this.loading = false;
-      }
-    );
+    let accountId = this.userService.getAccountID();
+    if (accountId)
+      this.operationService
+        .getOperations(
+          accountId,
+          this.currentPage * this.pageSize,
+          this.pageSize + 1
+        )
+        .subscribe(
+          (res) => {
+            this.operationsData = [...this.operationsData, ...res];
+            this.dataSource = new MatTableDataSource(this.operationsData);
+            this.dataSource.paginator = this.paginator;
+            this.paginator.pageIndex = this.currentPage;
+            this.paginator.length = res.length;
+            this.dataSource.sort = this.sort;
+            this.visitedPages.push(this.currentPage);
+            this.loading = false;
+          },
+          (err) => {
+            console.log(err);
+            this.loading = false;
+          }
+        );
   }
 
   applyFilter(event: Event) {
@@ -77,9 +91,15 @@ export class OperationsHistoryComponent implements AfterViewInit {
   }
 
   pageChanged(event: PageEvent) {
-    console.log({ event });
     this.pageSize = event.pageSize;
     this.currentPage = event.pageIndex;
-    this.loadData();
+
+    if (
+      (!event.previousPageIndex || event.previousPageIndex < event.pageIndex) &&
+      this.visitedPages.indexOf(event.pageIndex) == -1
+    ) {
+      console.log(`loading Data for page ${event.pageIndex}...`);
+      this.loadData();
+    }
   }
 }
