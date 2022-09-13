@@ -42,7 +42,7 @@ namespace CoronaApp.Api.Middlewares
                     _ => HttpStatusCode.InternalServerError,
                 };
                 response.StatusCode = (int)statusCode;
-                response.WriteAsync(ex.Message);
+                await response.WriteAsync(ex.Message);
 
                 _logger.Log(LogLevel.Error, ex.Message, response.StatusCode ,ex.StackTrace);
             }

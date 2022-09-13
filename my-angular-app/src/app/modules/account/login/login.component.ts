@@ -14,6 +14,7 @@ export class LoginComponent {
   email: string = '';
   password: string = '';
   errors: boolean = false;
+  errorMessage: string = '';
   loading: boolean = false;
 
   @Output() goToRegisterEvent = new EventEmitter<boolean>();
@@ -27,6 +28,7 @@ export class LoginComponent {
   Signin(): void {
     if (!this.email || !this.password) {
       this.errors = true;
+      this.errorMessage = 'Email and Password are requiered.';
       return;
     }
 
@@ -48,7 +50,8 @@ export class LoginComponent {
         console.log(err);
         this.errors = true;
         this.loading = false;
-        alert(err.status);
+        alert(err.message + err.status);
+        this.errorMessage = 'Incorrect email or password.';
       }
     );
   }

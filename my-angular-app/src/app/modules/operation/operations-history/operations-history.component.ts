@@ -58,11 +58,7 @@ export class OperationsHistoryComponent implements AfterViewInit {
     let accountId = this.userService.getAccountID();
     if (accountId)
       this.operationService
-        .getOperations(
-          accountId,
-          this.currentPage * this.pageSize,
-          this.pageSize + 1
-        )
+        .getOperations(accountId, this.currentPage, this.pageSize)
         .subscribe(
           (res) => {
             this.operationsData = [...this.operationsData, ...res];

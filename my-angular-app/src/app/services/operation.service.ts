@@ -71,11 +71,11 @@ export class OperationService {
 
   getOperations(
     accountID: number,
-    position: number,
+    currentPage: number,
     pageSize: number
   ): Observable<Operation[]> {
     return this.http.get<Operation[]>(
-      `${this.base}/${accountID}?position=${position}&pageSize=${pageSize}`
+      `${this.base}/${accountID}?currentPage=${currentPage}&pageSize=${pageSize}`
     );
   }
 
