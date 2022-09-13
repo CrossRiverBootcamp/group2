@@ -93,7 +93,7 @@ public class AccountDal:IAccountDal
 
         await db.SaveChangesAsync();
     }
-    public async Task<List<Operation>> GetOperationsByAccountIdAsync(int accountId, int position , int pageSize)
+    public async Task<List<Operation>> GetOperationsByAccountIdAsync(int accountId, int currentPage, int pageSize)
     {
         using var db = _factory.CreateDbContext();
 
@@ -111,6 +111,8 @@ public class AccountDal:IAccountDal
           , OperationTime = op1.OperationTime }
         ;
 
-        return sqlQuery.Skip(position).Take(pageSize).ToList();
+        if(currentPage == 0)
+            return await sqlQuery.Skip(currentPage * pageSize).Take(pageSize + 1).ToListAsync();
+        return await sqlQuery.Skip(currentPage * pageSize + 1).Take(pageSize).ToListAsync();
     }
 }

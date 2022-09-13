@@ -22,7 +22,14 @@ public class AccountController : ControllerBase
     [HttpPost("Login/")]
     public async Task<ActionResult<int>> SignInAsync(SignInDTO signInDTO)
     {
-        return Ok(await _accountService.SignInAsync(signInDTO.Email, signInDTO.Password));
+        try
+        {
+            return Ok(await _accountService.SignInAsync(signInDTO.Email, signInDTO.Password));
+        }
+        catch(Exception ex)
+        {
+            return BadRequest(ex);
+        }    
     }
 
     [HttpGet("Account/{id}")]

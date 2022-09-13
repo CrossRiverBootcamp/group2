@@ -10,6 +10,6 @@ public interface IAccountDal
     Task<bool> SignUpAsync(Customer customer);
     Task TransferAmountAsync(int FromAccount, int toAccount, int amount);
     Task AddNewOperationAsync(Operation operationHistoryfrom, Operation operationHistoryfromTo);
-    Task<List<Operation>> GetOperationsByAccountIdAsync(int accountId, int position, int pageSize);
+    Task<List<Operation>> GetOperationsByAccountIdAsync(int accountId, int currentPage, int pageSize);
 }
 
