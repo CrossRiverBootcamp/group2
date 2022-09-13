@@ -1,4 +1,5 @@
-﻿using Account.Service.Models;
+﻿using Account.Data;
+using Account.Service.Models;
 
 namespace Account.Service
 {

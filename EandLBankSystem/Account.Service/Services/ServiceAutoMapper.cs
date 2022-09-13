@@ -1,4 +1,5 @@
-﻿using Account.Data.Entities;
+﻿using Account.Data;
+using Account.Data.Entities;
 using Account.Service.Models;
 using AutoMapper;
 
@@ -14,9 +15,9 @@ public class ServiceAutoMapper : Profile
         CreateMap<Customer, CustomerModel>()
                .ReverseMap();
 
-        CreateMap<Operation, OperationModel>()
+        CreateMap<OperationSecondSideModel, OperationModel>()
             .ForMember(des => des.SecondSideAccountId, opts => opts
-            .MapFrom(src => src.AccountId))
+            .MapFrom(src => src.SecondSideAccountId))
             .ReverseMap();
     }
 }

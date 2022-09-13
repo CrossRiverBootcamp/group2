@@ -43,7 +43,7 @@ public class OperationService : IOperationService
     }
     public async Task<List<OperationModel>> GetOperationsByAccountIdAsync(int accountId, int position, int pageSize)
     {
-        List<Operation> l = await _accountDal.GetOperationsByAccountIdAsync(accountId, position, pageSize);
+        List<OperationSecondSideModel> l = await _accountDal.GetOperationsByAccountIdAsync(accountId, position, pageSize);
         return _mapper.Map<List<OperationModel>>(l);
     }
     private static IMapper ConfigureAutoMapper()

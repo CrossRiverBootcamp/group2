@@ -93,7 +93,7 @@ public class AccountDal:IAccountDal
 
         await db.SaveChangesAsync();
     }
-    public async Task<List<Operation>> GetOperationsByAccountIdAsync(int accountId, int position , int pageSize)
+    public async Task<List<OperationSecondSideModel>> GetOperationsByAccountIdAsync(int accountId, int position , int pageSize)
     {
         using var db = _factory.CreateDbContext();
 
@@ -102,8 +102,9 @@ public class AccountDal:IAccountDal
             join op2 in db.Operations on op1.TransactionId equals op2.TransactionId
             where op1.AccountId == accountId && op1.Id != op2.Id
             orderby op1.OperationTime descending
-            select new Operation{ Id = op1.Id
-          , AccountId = op2.AccountId
+            select new OperationSecondSideModel{ 
+            Id = op1.Id
+          , SecondSideAccountId = op2.AccountId
           , TransactionId = op1.TransactionId
           , Credit = op1.Credit
           , TransactionAmount = op1.TransactionAmount

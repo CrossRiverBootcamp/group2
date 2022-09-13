@@ -91,6 +91,7 @@ export class OperationsHistoryComponent implements AfterViewInit {
   }
 
   pageChanged(event: PageEvent) {
+    debugger;
     this.pageSize = event.pageSize;
     this.currentPage = event.pageIndex;
 
