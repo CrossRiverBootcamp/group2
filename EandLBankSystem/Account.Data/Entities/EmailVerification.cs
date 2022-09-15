@@ -11,5 +11,5 @@ public class EmailVerification
     [Required, DataType(DataType.Date)]
     public DateTime? ExpirationTime { get; set; } = DateTime.UtcNow.AddMinutes(5);
     [Required, Range(0,5)]
-    public int numOfTries { get; set; } = 0;
+    public int NumOfTries { get; set; } = 0;
 }

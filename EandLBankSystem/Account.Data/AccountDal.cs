@@ -145,7 +145,7 @@ public class AccountDal:IAccountDal
         var verification = await GetEmailVerificationAsync(email);
         if (verification != null)
         {
-            verification.numOfTries++;
+            verification.NumOfTries++;
             await _factory.CreateDbContext().SaveChangesAsync();
         }
     }
