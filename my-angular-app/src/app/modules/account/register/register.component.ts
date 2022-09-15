@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Login } from 'src/app/models/Login';
@@ -6,9 +6,7 @@ import { Register } from 'src/app/models/Register';
 import { AccountService } from 'src/app/services/Account.service';
 import { UserService } from 'src/app/services/user.service';
 import { MustMatch } from '../helpers/MustMatch.validator';
-import { MatTooltip } from '@angular/material/tooltip';
 import { EmailVerificationService } from 'src/app/services/emailVerification.service';
-
 
 @Component({
   selector: 'app-register',
@@ -19,8 +17,11 @@ export class RegisterComponent implements OnInit {
   submitted: boolean = false;
   showError: boolean = false;
   loading: boolean = false;
-  buttonVisable:boolean = true;
+  buttonVisable: boolean = true;
   success: boolean = false;
+  EmailSent: boolean = false;
+  verificationLoading: boolean = false;
+
   @Output() goToLoginEvent = new EventEmitter<boolean>();
 
   registerForm = this.formBuilder.group(
@@ -28,6 +29,7 @@ export class RegisterComponent implements OnInit {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
+      code: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', Validators.required],
       acceptTerms: [false, Validators.requiredTrue],
@@ -36,17 +38,14 @@ export class RegisterComponent implements OnInit {
       validator: MustMatch('password', 'confirmPassword'),
     }
   );
+
   constructor(
     private formBuilder: FormBuilder,
     private accountService: AccountService,
     private route: Router,
     private userService: UserService,
-    private emailVerificationService : EmailVerificationService
-  ) {
-    debugger;
-   
-
-  }
+    private emailVerificationService: EmailVerificationService
+  ) {}
 
   ngOnInit() {}
 
@@ -105,26 +104,33 @@ export class RegisterComponent implements OnInit {
     this.goToLoginEvent.emit(true);
   }
 
-  sendEmail(){
-    this.emailVerificationService.sendVerificationCode(this.f['email'].value)
-    .subscribe(
-      (res:any) => {
-        this.buttonVisable = false;
-      },
-      (errL:any)=>{
+  sendEmail() {
+    debugger;
+    this.verificationLoading = true;
+    this.emailVerificationService
+      .sendVerificationCode(this.f['email'].value)
+      .subscribe(
+        () => {
+          this.EmailSent = true;
+          this.verificationLoading = false;
+        },
+        (err) => {
+          this.verificationLoading = false;
+          console.error(err);
+        }
+      );
+  }
 
-      })
+  checkCode(event: any) {
+    this.emailVerificationService
+      .checkCode({ email: this.f['email'].value, code: event.target.value })
+      .subscribe(
+        (res) => {
+          this.success = true;
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
   }
-  checkCode(event:any){
-    this.emailVerificationService.checkCode({"email":this.f['email'].value,"code":event.target.value})
-          .subscribe(
-            (res:any) => {
-              this.success = true;
-            },
-            (errL:any)=>{
-      
-            }
-          )
-  }
-  
 }
