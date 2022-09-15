@@ -11,5 +11,9 @@ public interface IAccountDal
     Task TransferAmountAsync(int FromAccount, int toAccount, int amount);
     Task AddNewOperationAsync(Operation operationHistoryfrom, Operation operationHistoryfromTo);
     Task<List<OperationSecondSideModel>> GetOperationsByAccountIdAsync(int accountId, int currentPage, int pageSize);
+    Task AddEmailVerificationAsync(EmailVerification emailVerification);
+    Task<EmailVerification?> GetEmailVerificationAsync(string email);
+    Task RemoveEmailVerificationAsync(EmailVerification verification);
+    Task IncreaseNumOfTriesAsync(string email);
 }
 

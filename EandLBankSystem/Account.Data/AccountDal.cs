@@ -16,6 +16,7 @@ public class AccountDal:IAccountDal
         db.Database.Migrate();
     }
 
+    #region Customer
     public async Task<string> getCustomerByEmailAsync(string email)
     {
         using var db = _factory.CreateDbContext();
@@ -33,6 +34,8 @@ public class AccountDal:IAccountDal
             .FirstOrDefaultAsync(a => a.CustomerId == customerFound.Id) ?? throw new Exception("Internal Server Error.");
         return accountFound.Id;
     }
+    #endregion
+    #region Account
     public async Task<Entities.Account> GetAccountInfoAsync(int id)
     {
         using var db = _factory.CreateDbContext();
@@ -85,6 +88,8 @@ public class AccountDal:IAccountDal
 
         await db.SaveChangesAsync();   
     }
+#endregion
+    #region Operation
     public async Task AddNewOperationAsync(Operation operationHistoryfrom, Operation operationHistoryfromTo)
     {
         using var db = _factory.CreateDbContext();
@@ -116,4 +121,33 @@ public class AccountDal:IAccountDal
             return await sqlQuery.Skip(currentPage * pageSize).Take(pageSize + 1).ToListAsync();
         return await sqlQuery.Skip(currentPage * pageSize + 1).Take(pageSize).ToListAsync();
     }
+#endregion
+    #region EmailVerification
+    public async Task AddEmailVerificationAsync(EmailVerification emailVerification)
+    {
+        using var db = _factory.CreateDbContext();
+        await db.EmailVerifications.AddAsync(emailVerification);
+        await db.SaveChangesAsync();
+    }
+    public async Task<EmailVerification?> GetEmailVerificationAsync(string email)
+    {
+        using var db = _factory.CreateDbContext();
+        return await db.EmailVerifications.FirstOrDefaultAsync(ev => ev.Email.Equals(email));     
+    }
+    public async Task RemoveEmailVerificationAsync(EmailVerification verification)
+    {
+        using var db = _factory.CreateDbContext();
+        db.EmailVerifications.Remove(verification);
+        await db.SaveChangesAsync();
+    }
+    public async Task IncreaseNumOfTriesAsync(string email)
+    {
+        var verification = await GetEmailVerificationAsync(email);
+        if (verification != null)
+        {
+            verification.numOfTries++;
+            await _factory.CreateDbContext().SaveChangesAsync();
+        }
+    }
+    #endregion
 }
