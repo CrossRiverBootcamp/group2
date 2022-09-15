@@ -3,15 +3,17 @@ using System;
 using Account.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
 namespace Account.Data.Migrations
 {
     [DbContext(typeof(AccountContext))]
-    [Migration("20220913123322_initEmailVerification")]
-    partial class initEmailVerification
+    [Migration("20220915193303_start-DeleteExpiredRecords-job")]
+    partial class startDeleteExpiredRecordsjob
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -97,8 +99,12 @@ namespace Account.Data.Migrations
                         .HasMaxLength(4)
                         .HasColumnType("nvarchar(4)");
 
-                    b.Property<DateTime>("ExpirationTime")
+                    b.Property<DateTime?>("ExpirationTime")
+                        .IsRequired()
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("NumOfTries")
+                        .HasColumnType("int");
 
                     b.HasKey("Email");
 
