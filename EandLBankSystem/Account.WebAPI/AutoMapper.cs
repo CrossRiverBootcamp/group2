@@ -28,6 +28,9 @@ public class AutoMapper : Profile
 
         CreateMap<OperationModel, GetOperationsDTO>()
             .ReverseMap();
+
+        CreateMap<EmailVerificationModel, CheckVerificationCodeDTO>()
+            .ReverseMap();
     }
 }
 

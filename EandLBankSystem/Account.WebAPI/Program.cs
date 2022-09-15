@@ -1,5 +1,6 @@
 using Account.Messages.Commands;
 using Account.Service;
+using Account.Service.Services;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -35,6 +36,7 @@ builder.Host.UseNServiceBus(hostBuilderContext =>
 
     var routing = transport.Routing();
     routing.RouteToEndpoint(typeof(FinishTransactionSaga), "Transaction");
+    //routing.RouteToEndpoint(typeof(DelayDeleteVerification), "Account");
 
     var conventions = endpointConfiguration.Conventions();
     conventions.DefiningCommandsAs(type => type.Namespace == "Account.Messages.Commands");
@@ -52,8 +54,10 @@ builder.Host.UseNServiceBus(hostBuilderContext =>
 builder.Services.AddServicesExtention(connectionString);
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IOperationService, OperationService>();
+builder.Services.AddScoped<IEmailVerificationService, EmailVerificationService>();
 builder.Services.AddScoped<IPasswordHash, PasswordHash>();
 builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
 builder.Services.AddControllers();
 builder.Services.AddCors(options =>
