@@ -38,7 +38,7 @@ public class EmailVerificationService : IEmailVerificationService
         if(relevantVerification?.Code == verification.Code)
         {
             await RemoveEmailVerificationAsync(verification.Email);
-            return relevantVerification?.numOfTries < 5 || relevantVerification?.ExpirationTime >= DateTime.UtcNow;
+            return relevantVerification?.NumOfTries < 5 || relevantVerification?.ExpirationTime >= DateTime.UtcNow;
         }
         else
         {
