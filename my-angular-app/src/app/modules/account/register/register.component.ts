@@ -21,6 +21,7 @@ export class RegisterComponent implements OnInit {
   success: boolean = false;
   EmailSent: boolean = false;
   verificationLoading: boolean = false;
+  errorMessage: string | null = null;
 
   @Output() goToLoginEvent = new EventEmitter<boolean>();
 
@@ -67,6 +68,7 @@ export class RegisterComponent implements OnInit {
       password: this.f['password'].value,
       firstName: this.f['firstName'].value,
       lastName: this.f['lastName'].value,
+      verificationCode: this.f['code'].value,
     };
 
     const loginSubscriber: Login = {
@@ -76,20 +78,24 @@ export class RegisterComponent implements OnInit {
 
     this.loading = true;
     this.accountService.register(newSubscriber).subscribe(
-      (res) => {
+      () => {
         this.accountService.login(loginSubscriber).subscribe(
           (res) => {
             this.userService.setAccountID(res);
             this.route.navigate(['']);
           },
           (err) => {
-            console.log(err);
+            console.log(err.message);
+            this.errorMessage =
+              'Internal server error has accured while tring to register.';
           }
         );
       },
       (err) => {
         console.log(err);
-        this.showError = true;
+        console.log(err.message);
+        this.errorMessage =
+          'Internal server error has accured while tring to log into your account.';
         this.loading = false;
       }
     );
@@ -116,20 +122,9 @@ export class RegisterComponent implements OnInit {
         },
         (err) => {
           this.verificationLoading = false;
-          console.error(err);
-        }
-      );
-  }
-
-  checkCode(event: any) {
-    this.emailVerificationService
-      .checkCode({ email: this.f['email'].value, code: event.target.value })
-      .subscribe(
-        (res) => {
-          this.success = true;
-        },
-        (err) => {
-          console.log(err);
+          console.error(err.message);
+          this.errorMessage =
+            'Internal server error has accured while tring to send an email.';
         }
       );
   }

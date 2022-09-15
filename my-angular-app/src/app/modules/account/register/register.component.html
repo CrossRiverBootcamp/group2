@@ -90,9 +90,7 @@
               />
             </div>
             <div *ngIf="submitted && f['code'].errors" class="invalid-feedback">
-              <div *ngIf="f['code'].errors['required']">
-                Verification code is required
-              </div>
+              Verification code is required
             </div>
           </div>
 
@@ -105,6 +103,7 @@
           </div>
         </div>
         <div class="form-row">
+          {{ "f: " + f["password"].errors?.["required"] }}
           <div class="form-group col">
             <label>Password</label>
             <input
@@ -197,5 +196,9 @@
     *ngIf="loading == true"
   >
     <span class="sr-only">Loading...</span>
+  </div>
+
+  <div class="alert alert-danger" *ngIf="errorMessage">
+    <strong>Error!</strong> {{ errorMessage }}
   </div>
 </div>
