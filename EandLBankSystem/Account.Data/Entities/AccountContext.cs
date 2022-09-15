@@ -9,6 +9,7 @@ public class AccountContext : DbContext
     public DbSet<Customer> Customers { get; set; }
     public DbSet<Account> Accounts { get; set; }
     public DbSet<Operation> Operations { get; set; }
+    public DbSet<EmailVerification> EmailVerifications { get; set; } 
 }
 
 
