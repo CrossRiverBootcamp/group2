@@ -25,10 +25,6 @@ namespace Account.WebAPI.Controllers
             return Ok();
         }
 
-        [HttpPost("code")]
-        public async Task<ActionResult<bool>> CheckVerificationCodeAsync(CheckVerificationCodeDTO verification)
-        {
-            return Ok(await _emailVerificationService.CheckVerificationCodeAsync(_mapper.Map<EmailVerificationModel>(verification)));
-        }
+        
     }
 }

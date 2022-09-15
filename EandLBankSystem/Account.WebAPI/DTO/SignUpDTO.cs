@@ -19,5 +19,6 @@ public class SignUpDTO
     [MinLength(6)]
     [MaxLength(50)]
     public string Password { get; set; }
+    public string VerificationCode { get; set; }
 }
 
