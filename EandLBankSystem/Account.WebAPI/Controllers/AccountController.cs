@@ -4,7 +4,6 @@ using Account.WebAPI.DTO;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
-
 namespace Account.WebAPI.Controllers;
 
 [Route("api/")]
@@ -39,10 +38,18 @@ public class AccountController : ControllerBase
     }
 
     [HttpPost("SignUp/")]
-    public async Task<ActionResult<bool>> SignUpAsync([FromBody] SignUpDTO signUpDTO)
+    public async Task<ActionResult> SignUpAsync([FromBody] SignUpDTO signUpDTO)
     {
-        bool result = await _accountService.SignUpAsync(_mapper.Map<CustomerModel>(signUpDTO),signUpDTO.VerificationCode);
-        return result ? Ok(result) : BadRequest(result);
+        try
+        {
+            await _accountService.SignUpAsync(_mapper.Map<CustomerModel>(signUpDTO), signUpDTO.VerificationCode);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+
     }
 }
 

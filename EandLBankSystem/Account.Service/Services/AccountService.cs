@@ -36,9 +36,7 @@ public class AccountService:IAccountService
     }
     public async Task<bool> SignUpAsync(CustomerModel customerModel,string verificationCode)
     {
-        bool verified = await _emailVerificationService.CheckVerificationCodeAsync(new() { Email = customerModel.Email, Code = verificationCode });
-        if(!verified)
-            return false;
+        await _emailVerificationService.VerifyEmailAsync(new() { Email = customerModel.Email, Code = verificationCode });
         string salt = _passwordHash.GenerateSalt(N_SALT);
         customerModel.Password = _passwordHash.HashPassword(customerModel.Password, salt , N_ITERATIONS , N_HASH);
         Customer customer = _mapper.Map<Customer>(customerModel);

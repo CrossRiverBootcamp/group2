@@ -31,20 +31,28 @@ public class EmailVerificationService : IEmailVerificationService
         await _accountDal.AddEmailVerificationAsync(new() { Code = code, Email = email });
         await _messageSession.SendLocal(new DelayDeleteVerification() { Email = email});
     }
-    public async Task<bool> CheckVerificationCodeAsync(EmailVerificationModel verification)
+    public async Task VerifyEmailAsync(EmailVerificationModel verification)
     {
         var relevantVerification = await _accountDal.GetEmailVerificationAsync(verification.Email);
 
         if(relevantVerification?.Code == verification.Code)
         {
             await RemoveEmailVerificationAsync(verification.Email);
-            return relevantVerification?.NumOfTries < 5 || relevantVerification?.ExpirationTime >= DateTime.UtcNow;
+
+            if (relevantVerification?.NumOfTries < 5)
+                throw new InvalidOperationException("Too many attempts to resource.");
+
+            if (relevantVerification?.ExpirationTime >= DateTime.UtcNow)
+                throw new InvalidOperationException("Action has expired.");
         }
         else
         {
             if (relevantVerification != null)
+            {
                 await _accountDal.IncreaseNumOfTriesAsync(relevantVerification.Email);
-            return false;
+                throw new InvalidOperationException("Wrong verification code.");
+            }
+            throw new InvalidOperationException("No verification is availble for the given email address.");
         }
     }
     public async Task RemoveEmailVerificationAsync(string email)

@@ -7,7 +7,7 @@ namespace Account.Data;
 public class AccountDal:IAccountDal
 {
     private readonly ILogger<AccountDal> _logger;
-    private IDbContextFactory<AccountContext> _factory;
+    private readonly IDbContextFactory<AccountContext> _factory;
     public AccountDal(IDbContextFactory<AccountContext> factory , ILogger<AccountDal> logger)
     {
         _logger = logger;

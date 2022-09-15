@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Account.Data.Entities;
-[Index("Email", IsUnique = true)]
+[Microsoft.EntityFrameworkCore.Index("Email", IsUnique = true)]
 public class Customer
 {
     [Key, Required, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
