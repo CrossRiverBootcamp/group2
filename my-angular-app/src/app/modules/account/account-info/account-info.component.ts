@@ -26,6 +26,7 @@ export class AccountInfoComponent implements OnInit {
       this.accountService.getAccountInfo(this.accountID).subscribe(
         (res) => {
           this.account = res;
+          this.account.balance /= 100;
           this.loading = false;
         },
         (err) => {

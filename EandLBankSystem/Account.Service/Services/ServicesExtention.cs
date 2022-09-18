@@ -11,6 +11,11 @@ public static class ServicesExtention
     {
         services.AddScoped<IAccountDal, AccountDal>();
         services.AddDbContextFactory<AccountContext>(opt => opt.UseSqlServer(connectionString));
+        using (var scope = services.BuildServiceProvider().CreateScope())
+        {
+            var dataContext = scope.ServiceProvider.GetRequiredService<AccountContext>();
+            dataContext.Database.Migrate();
+        }
     }
 }
 

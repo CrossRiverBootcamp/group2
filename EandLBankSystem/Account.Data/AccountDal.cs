@@ -12,8 +12,8 @@ public class AccountDal : IAccountDal
     {
         _logger = logger;
         _factory = factory ?? throw new ArgumentNullException(nameof(factory));
-        using var db = _factory.CreateDbContext();
-        db.Database.Migrate();
+        //using var db = _factory.CreateDbContext();
+        //db.Database.Migrate();
     }
 
     #region Customer
