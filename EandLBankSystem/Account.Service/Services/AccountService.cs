@@ -34,14 +34,14 @@ public class AccountService:IAccountService
     {
          return _mapper.Map<AccountModel>(await _accountDal.GetAccountInfoAsync(id));
     }
-    public async Task<bool> SignUpAsync(CustomerModel customerModel,string verificationCode)
+    public async Task SignUpAsync(CustomerModel customerModel,string verificationCode)
     {
         await _emailVerificationService.VerifyEmailAsync(new() { Email = customerModel.Email, Code = verificationCode });
         string salt = _passwordHash.GenerateSalt(N_SALT);
         customerModel.Password = _passwordHash.HashPassword(customerModel.Password, salt , N_ITERATIONS , N_HASH);
         Customer customer = _mapper.Map<Customer>(customerModel);
         customer.Salt = salt;
-        return await _accountDal.SignUpAsync(customer);
+        await _accountDal.SignUpAsync(customer);
     }
     public async Task ExecuteTransactionAsync(TransactionModel transactionModel)
     {      

@@ -1,5 +1,6 @@
 ﻿using Account.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging;
 
 namespace Account.Data;
@@ -43,27 +44,18 @@ public class AccountDal : IAccountDal
             .FirstOrDefaultAsync() ?? throw new KeyNotFoundException(nameof(id));
         return accountFound;
     }
-    public async Task<bool> SignUpAsync(Customer customer)
+    public async Task SignUpAsync(Customer customer)
     {
         if (await EmailAddressExistsAsync(customer.Email))
             throw new ArgumentException("Email already exists", customer.Email);
         using var db = _factory.CreateDbContext();
         await db.Customers.AddAsync(customer);
-        await db.Accounts.AddAsync(new Entities.Account()
+        await db.Accounts.AddAsync(new() 
         {
             OpenDate = DateTime.UtcNow,
             Customer = customer
         });
-        try
-        {
-            await db.SaveChangesAsync();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex.Message, ex.StackTrace);
-            return false;
-        }
-        return true;
+        await db.SaveChangesAsync();  
     }
     public async Task<bool> EmailAddressExistsAsync(string email)
     {
@@ -73,17 +65,22 @@ public class AccountDal : IAccountDal
     public async Task TransferAmountAsync(int fromAccount, int toAccount, int amount)
     {
         using var db = _factory.CreateDbContext();
-        var from = await db.Accounts.FirstOrDefaultAsync(a => a.Id == fromAccount);
-        var to = await db.Accounts.FirstOrDefaultAsync(a => a.Id == toAccount);
+        Task<Entities.Account?> fromTask = db.Accounts.FirstOrDefaultAsync(a => a.Id == fromAccount);
+        Task<Entities.Account?> toTask = db.Accounts.FirstOrDefaultAsync(a => a.Id == toAccount);
 
-        if (from == null || to == null)
+        List<Task> tasks = new();
+        tasks.Add(fromTask);
+        tasks.Add(toTask);
+        await Task.WhenAll(tasks);
+   
+        if ( fromTask.Result == null || toTask.Result == null)
             throw new KeyNotFoundException("One or more accounts don't exist in db.");
 
-        if (from.Balance < amount)
+        if (fromTask.Result.Balance < amount)
             throw new Exception("There is not enough balance in the account");
 
-        from.Balance -= amount;
-        to.Balance += amount;
+        fromTask.Result.Balance -= amount;
+        toTask.Result.Balance += amount;
 
         await db.SaveChangesAsync();
     }
@@ -92,8 +89,11 @@ public class AccountDal : IAccountDal
     public async Task AddNewOperationAsync(Operation operationHistoryfrom, Operation operationHistoryfromTo)
     {
         using var db = _factory.CreateDbContext();
-        await db.Operations.AddAsync(operationHistoryfromTo);
-        await db.Operations.AddAsync(operationHistoryfrom);
+
+        List<Task> tasks = new();
+        tasks.Add(db.Operations.AddAsync(operationHistoryfromTo).AsTask());
+        tasks.Add(db.Operations.AddAsync(operationHistoryfrom).AsTask());
+        await Task.WhenAll(tasks);
 
         await db.SaveChangesAsync();
     }
@@ -108,21 +108,14 @@ public class AccountDal : IAccountDal
             orderby op1.OperationTime descending
             select new OperationSecondSideModel
             {
-                Id = op1.Id
-          ,
-                SecondSideAccountId = op2.AccountId
-          ,
-                TransactionId = op1.TransactionId
-          ,
-                Credit = op1.Credit
-          ,
-                TransactionAmount = op1.TransactionAmount
-          ,
-                Balance = op1.Balance
-          ,
+                Id = op1.Id,
+                SecondSideAccountId = op2.AccountId,
+                TransactionId = op1.TransactionId,
+                Credit = op1.Credit,
+                TransactionAmount = op1.TransactionAmount,
+                Balance = op1.Balance,
                 OperationTime = op1.OperationTime
-            }
-        ;
+            };
 
         if (currentPage == 0)
             return await sqlQuery.Skip(currentPage * pageSize).Take(pageSize + 1).ToListAsync();
