@@ -1,8 +1,8 @@
 ﻿using System.Net;
 
-namespace Transaction.WebAPI.Middlewares;
 
-// You may need to install the Microsoft.AspNetCore.Http.Abstractions package into your project
+namespace Transaction.WebAPI;
+
 public class HandlerErrorMiddleware
 {
     private readonly RequestDelegate _next;
@@ -13,30 +13,30 @@ public class HandlerErrorMiddleware
         _next = next;
     }
 
-    public async Task Invoke(HttpContext httpContext)
+public async Task Invoke(HttpContext httpContext)
+{
+    try
     {
-        try
+        await _next(httpContext);
+    }
+    catch (Exception ex)
+    {
+        var response = httpContext.Response;
+        response.ContentType = "application/json";
+        HttpStatusCode statusCode = ex switch
         {
-            await _next(httpContext);
-        }
-        catch (Exception ex)
-        {
-            var response = httpContext.Response;
-            response.ContentType = "application/json";
-            HttpStatusCode statusCode = ex switch
-            {
-                ArgumentNullException or ArgumentException => HttpStatusCode.BadRequest,
-                UnauthorizedAccessException => HttpStatusCode.Forbidden,
-                KeyNotFoundException => HttpStatusCode.NotFound,
-                _ => HttpStatusCode.InternalServerError,
-            };
-            response.StatusCode = (int)statusCode;
-            await response.WriteAsync(ex.Message);
+            ArgumentNullException or ArgumentException => HttpStatusCode.BadRequest,
+            UnauthorizedAccessException => HttpStatusCode.Forbidden,
+            KeyNotFoundException => HttpStatusCode.NotFound,
+            _ => HttpStatusCode.InternalServerError,
+        };
+        response.StatusCode = (int)statusCode;
+        await response.WriteAsync(ex.Message);
 
-            _logger.Log(LogLevel.Error, ex.Message, response.StatusCode ,ex.StackTrace);
-        }
+        _logger.Log(LogLevel.Error, ex.Message, response.StatusCode ,ex.StackTrace);
     }
 }
+
 
 public static class HandleErrorMiddlewareExtensions
 {

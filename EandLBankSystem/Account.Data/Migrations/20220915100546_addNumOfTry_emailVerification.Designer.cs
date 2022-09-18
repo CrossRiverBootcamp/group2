@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Account.Data.Migrations
 {
     [DbContext(typeof(AccountContext))]
-    [Migration("20220915075742_add-verification-NumOfTries")]
-    partial class addverificationupdateNumOfTries
+    [Migration("20220915100546_addNumOfTry_emailVerification")]
+    partial class addNumOfTry_emailVerification
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

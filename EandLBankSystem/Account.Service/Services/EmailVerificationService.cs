@@ -1,11 +1,11 @@
 ﻿using Account.Data;
-using Account.Service.Models;
-using System.Security.Cryptography;
-using Microsoft.Extensions.Options;
-using System.Net.Mail;
-using System.Net;
-using NServiceBus;
 using Account.Messages.Commands;
+using Account.Service.Models;
+using Microsoft.Extensions.Options;
+using NServiceBus;
+using System.Net;
+using System.Net.Mail;
+using System.Security.Cryptography;
 
 namespace Account.Service.Services;
 
@@ -24,17 +24,23 @@ public class EmailVerificationService : IEmailVerificationService
 
     public async Task AddEmailVerificationAsync(string email)
     {
+        
         var code = Convert.ToHexString(RandomNumberGenerator.GetBytes(2));
+        if (await _accountDal.EmailAddressExistsAsync(email))
+            throw new ArgumentException("Email already exists", email);
+
         List <Task> tasks = new();
-
         tasks.Add(SendVerificationEmailAsync(email, code));
-        tasks.Add(AddEmailAsync(email, code));
+        tasks.Add(AddEmailRecordAsync(email, code));
 
+        var sendOptions = new SendOptions();
+        sendOptions.DelayDeliveryWith(TimeSpan.FromMinutes(5));
+        sendOptions.RouteToThisEndpoint();
+
+        tasks.Add(_messageSession.Send(new DelayDeleteVerification() { Email = email }, sendOptions));
         await Task.WhenAll(tasks);
-
-        await _messageSession.SendLocal(new DelayDeleteVerification() { Email = email});
     }
-    private async Task AddEmailAsync(string email, string code)
+    private async Task AddEmailRecordAsync(string email, string code)
     {
         await RemoveEmailVerificationAsync(email);
         await _accountDal.AddEmailVerificationAsync(new() { Code = code, Email = email });
@@ -43,23 +49,18 @@ public class EmailVerificationService : IEmailVerificationService
     {
         var relevantVerification = await _accountDal.GetEmailVerificationAsync(verification.Email);
 
-        if(relevantVerification?.Code == verification.Code)
-        {
-            if (relevantVerification?.NumOfTries >= 5)
-                throw new InvalidOperationException("Too many attempts to resource.");
-
-            if (relevantVerification?.ExpirationTime >= DateTime.UtcNow)
-                throw new InvalidOperationException("Action has expired.");
-        }
-        else
-        {
-            if (relevantVerification != null)
-            {
-                await _accountDal.IncreaseNumOfTriesAsync(relevantVerification.Email);
-                throw new InvalidOperationException("Wrong verification code.");
-            }
+        if (relevantVerification == null)
             throw new InvalidOperationException("No verification is availble for the given email address.");
+        if (relevantVerification.NumOfTries >= 5)
+            throw new InvalidOperationException("Too many attempts to resource.");
+        if (relevantVerification.ExpirationTime >= DateTime.UtcNow)
+            throw new InvalidOperationException("Action has expired.");
+        if (relevantVerification.Code != verification.Code)
+        {
+            await _accountDal.IncreaseNumOfTriesAsync(relevantVerification.Email);
+            throw new InvalidOperationException("Wrong verification code.");
         }
+       
     }
     public async Task RemoveEmailVerificationAsync(string email)
     {

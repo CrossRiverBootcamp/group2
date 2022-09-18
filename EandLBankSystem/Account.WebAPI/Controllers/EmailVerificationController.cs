@@ -21,8 +21,15 @@ namespace Account.WebAPI.Controllers
         [HttpPost]
         public async Task<ActionResult> AddEmailVerificationAsync([FromBody]string email)
         {
+            try 
+            { 
             await _emailVerificationService.AddEmailVerificationAsync(email);
             return Ok();
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         

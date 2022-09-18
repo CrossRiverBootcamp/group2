@@ -26,7 +26,7 @@ public class AccountService:IAccountService
    
     public async Task<int> SignInAsync(string email, string password)
     {
-        string salt = await _accountDal.getCustomerByEmailAsync(email);
+        string salt = (await _accountDal.getCustomerByEmailAsync(email)).Salt;
         password = _passwordHash.HashPassword(password, salt, N_ITERATIONS, N_HASH);
         return await _accountDal.SignInAsync(email, password);
     }
@@ -34,14 +34,14 @@ public class AccountService:IAccountService
     {
          return _mapper.Map<AccountModel>(await _accountDal.GetAccountInfoAsync(id));
     }
-    public async Task<bool> SignUpAsync(CustomerModel customerModel,string verificationCode)
+    public async Task SignUpAsync(CustomerModel customerModel,string verificationCode)
     {
         await _emailVerificationService.VerifyEmailAsync(new() { Email = customerModel.Email, Code = verificationCode });
         string salt = _passwordHash.GenerateSalt(N_SALT);
         customerModel.Password = _passwordHash.HashPassword(customerModel.Password, salt , N_ITERATIONS , N_HASH);
         Customer customer = _mapper.Map<Customer>(customerModel);
         customer.Salt = salt;
-        return await _accountDal.SignUpAsync(customer);
+        await _accountDal.SignUpAsync(customer);
     }
     public async Task ExecuteTransactionAsync(TransactionModel transactionModel)
     {      

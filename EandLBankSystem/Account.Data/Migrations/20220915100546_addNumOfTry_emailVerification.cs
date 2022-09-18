@@ -4,22 +4,23 @@
 
 namespace Account.Data.Migrations
 {
-    public partial class addverificationupdateNumOfTries : Migration
+    public partial class addNumOfTry_emailVerification : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "numOfTries",
+            migrationBuilder.AddColumn<int>(
+                name: "NumOfTries",
                 table: "EmailVerifications",
-                newName: "NumOfTries");
+                type: "int",
+                nullable: false,
+                defaultValue: 0);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
+            migrationBuilder.DropColumn(
                 name: "NumOfTries",
-                table: "EmailVerifications",
-                newName: "numOfTries");
+                table: "EmailVerifications");
         }
     }
 }

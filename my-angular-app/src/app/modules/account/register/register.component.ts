@@ -116,6 +116,7 @@ export class RegisterComponent implements OnInit {
           this.sendingEmailError = false;
         },
         (err) => {
+          debugger;
           this.verificationLoading = false;
           this.sendingEmailError = true;
         }

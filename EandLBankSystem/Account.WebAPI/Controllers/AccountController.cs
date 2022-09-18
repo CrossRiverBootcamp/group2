@@ -34,10 +34,11 @@ public class AccountController : ControllerBase
     [HttpGet("Account/{id}")]
     public async Task<ActionResult<GetAccountDTO>> GetAccountInfoAsync(int id)
     {
-        try {        
+        try
+        {
             return Ok(_mapper.Map<GetAccountDTO>(await _accountService.GetAccountInfoAsync(id)));
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }

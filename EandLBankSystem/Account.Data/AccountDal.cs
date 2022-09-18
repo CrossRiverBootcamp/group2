@@ -1,14 +1,14 @@
 ﻿using Account.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging;
-
 namespace Account.Data;
 
-public class AccountDal:IAccountDal
+public class AccountDal : IAccountDal
 {
     private readonly ILogger<AccountDal> _logger;
     private readonly IDbContextFactory<AccountContext> _factory;
-    public AccountDal(IDbContextFactory<AccountContext> factory , ILogger<AccountDal> logger)
+    public AccountDal(IDbContextFactory<AccountContext> factory, ILogger<AccountDal> logger)
     {
         _logger = logger;
         _factory = factory ?? throw new ArgumentNullException(nameof(factory));
@@ -17,12 +17,11 @@ public class AccountDal:IAccountDal
     }
 
     #region Customer
-    public async Task<string> getCustomerByEmailAsync(string email)
+    public async Task<Customer> getCustomerByEmailAsync(string email)
     {
         using var db = _factory.CreateDbContext();
-        Customer customerFound = await db.Customers
-            .FirstOrDefaultAsync(c => c.Email.Equals(email)) ?? throw new UnauthorizedAccessException("The requested user was not found."); 
-        return customerFound.Salt;
+        return await db.Customers
+            .FirstOrDefaultAsync(c => c.Email.Equals(email)) ?? throw new UnauthorizedAccessException("The requested user was not found.");
     }
     public async Task<int> SignInAsync(string email, string password)
     {
@@ -40,61 +39,60 @@ public class AccountDal:IAccountDal
     {
         using var db = _factory.CreateDbContext();
         Entities.Account accountFound = await db.Accounts
-            .Where(a=>a.Id==id).Include(a=> a.Customer)
-            .FirstOrDefaultAsync() ?? throw new Exception($"Intarnal server error: no record was found for '{nameof(id)}' {id}");
+            .Where(a => a.Id == id).Include(a=> a.Customer)
+            .FirstOrDefaultAsync() ?? throw new KeyNotFoundException($"Internal server error: no record was found for '{nameof(id)}' {id}");
         return accountFound;
     }
-    public async Task<bool> SignUpAsync(Customer customer)
+    public async Task SignUpAsync(Customer customer)
     {
-        if(await EmailAddressExistsAsync(customer.Email))  
-            throw new ArgumentException(nameof(customer));
+        if (await EmailAddressExistsAsync(customer.Email))
+            throw new ArgumentException("Email already exists", customer.Email);
         using var db = _factory.CreateDbContext();
         await db.Customers.AddAsync(customer);
-        await db.Accounts.AddAsync(new Entities.Account()
+        await db.Accounts.AddAsync(new() 
         {
             OpenDate = DateTime.UtcNow,
             Customer = customer
         });
-        try
-        {
-            await db.SaveChangesAsync();
-        }
-        catch(Exception ex)
-        {
-            _logger.LogError(ex.Message, ex.StackTrace);
-            return false;
-        }
-        return true;
+        await db.SaveChangesAsync();  
     }
     public async Task<bool> EmailAddressExistsAsync(string email)
     {
-       using var db = _factory.CreateDbContext();
-       return await db.Customers.AnyAsync(c => c.Email.Equals(email));  
+        using var db = _factory.CreateDbContext();
+        return await db.Customers.AnyAsync(c => c.Email.Equals(email));
     }
     public async Task TransferAmountAsync(int fromAccount, int toAccount, int amount)
     {
         using var db = _factory.CreateDbContext();
-        var from = await db.Accounts.FirstOrDefaultAsync(a => a.Id == fromAccount);
-        var to = await db.Accounts.FirstOrDefaultAsync(a => a.Id == toAccount);
+        Task<Entities.Account?> fromTask = db.Accounts.FirstOrDefaultAsync(a => a.Id == fromAccount);
+        Task<Entities.Account?> toTask = db.Accounts.FirstOrDefaultAsync(a => a.Id == toAccount);
 
-        if (from == null || to == null)
+        List<Task> tasks = new();
+        tasks.Add(fromTask);
+        tasks.Add(toTask);
+        await Task.WhenAll(tasks);
+   
+        if ( fromTask.Result == null || toTask.Result == null)
             throw new KeyNotFoundException("One or more accounts don't exist in db.");
 
-        if (from.Balance < amount)
+        if (fromTask.Result.Balance < amount)
             throw new Exception("There is not enough balance in the account");
 
-        from.Balance -= amount;
-        to.Balance += amount;
+        fromTask.Result.Balance -= amount;
+        toTask.Result.Balance += amount;
 
-        await db.SaveChangesAsync();   
+        await db.SaveChangesAsync();
     }
-#endregion
+    #endregion
     #region Operation
     public async Task AddNewOperationAsync(Operation operationHistoryfrom, Operation operationHistoryfromTo)
     {
         using var db = _factory.CreateDbContext();
-        await db.Operations.AddAsync(operationHistoryfromTo);
-        await db.Operations.AddAsync(operationHistoryfrom);
+
+        List<Task> tasks = new();
+        tasks.Add(db.Operations.AddAsync(operationHistoryfromTo).AsTask());
+        tasks.Add(db.Operations.AddAsync(operationHistoryfrom).AsTask());
+        await Task.WhenAll(tasks);
 
         await db.SaveChangesAsync();
     }
@@ -107,21 +105,22 @@ public class AccountDal:IAccountDal
             join op2 in db.Operations on op1.TransactionId equals op2.TransactionId
             where op1.AccountId == accountId && op1.Id != op2.Id
             orderby op1.OperationTime descending
-            select new OperationSecondSideModel{ 
-            Id = op1.Id
-          , SecondSideAccountId = op2.AccountId
-          , TransactionId = op1.TransactionId
-          , Credit = op1.Credit
-          , TransactionAmount = op1.TransactionAmount
-          , Balance = op1.Balance
-          , OperationTime = op1.OperationTime }
-        ;
+            select new OperationSecondSideModel
+            {
+                Id = op1.Id,
+                SecondSideAccountId = op2.AccountId,
+                TransactionId = op1.TransactionId,
+                Credit = op1.Credit,
+                TransactionAmount = op1.TransactionAmount,
+                Balance = op1.Balance,
+                OperationTime = op1.OperationTime
+            };
 
-        if(currentPage == 0)
+        if (currentPage == 0)
             return await sqlQuery.Skip(currentPage * pageSize).Take(pageSize + 1).ToListAsync();
         return await sqlQuery.Skip(currentPage * pageSize + 1).Take(pageSize).ToListAsync();
     }
-#endregion
+    #endregion
     #region EmailVerification
     public async Task AddEmailVerificationAsync(EmailVerification emailVerification)
     {
@@ -132,7 +131,7 @@ public class AccountDal:IAccountDal
     public async Task<EmailVerification?> GetEmailVerificationAsync(string email)
     {
         using var db = _factory.CreateDbContext();
-        return await db.EmailVerifications.FirstOrDefaultAsync(ev => ev.Email.Equals(email));     
+        return await db.EmailVerifications.FirstOrDefaultAsync(ev => ev.Email.Equals(email));
     }
     public async Task RemoveEmailVerificationAsync(EmailVerification verification)
     {

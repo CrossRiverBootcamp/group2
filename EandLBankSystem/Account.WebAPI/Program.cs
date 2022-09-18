@@ -1,7 +1,7 @@
 using Account.Messages.Commands;
 using Account.Service;
 using Account.Service.Services;
-using CoronaApp.Api.Middlewares;
+using Account.WebAPI;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
