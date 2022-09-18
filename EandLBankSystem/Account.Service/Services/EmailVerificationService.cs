@@ -1,11 +1,11 @@
 ﻿using Account.Data;
-using Account.Service.Models;
-using System.Security.Cryptography;
-using Microsoft.Extensions.Options;
-using System.Net.Mail;
-using System.Net;
-using NServiceBus;
 using Account.Messages.Commands;
+using Account.Service.Models;
+using Microsoft.Extensions.Options;
+using NServiceBus;
+using System.Net;
+using System.Net.Mail;
+using System.Security.Cryptography;
 
 namespace Account.Service.Services;
 

@@ -15,7 +15,6 @@ public class DelayDeleteVerificationHandler : IHandleMessages<DelayDeleteVerific
 
     public async Task Handle(DelayDeleteVerification message, IMessageHandlerContext context)
     {
-     //   await Task.Delay(300000); //wait 5 minutes.
         await _emailVerificationService.RemoveEmailVerificationAsync(message.Email);
         await Task.CompletedTask;
     }

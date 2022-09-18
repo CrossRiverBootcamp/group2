@@ -1,6 +1,7 @@
 using Account.Messages.Commands;
 using Account.Service;
 using Account.Service.Services;
+using Account.WebAPI;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -95,6 +96,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");
+
+app.UseHandleErrorMiddleware();
 
 app.UseAuthorization();
 

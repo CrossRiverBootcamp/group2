@@ -1,3 +1,4 @@
+using CoronaApp.Api.Middlewares;
 using Microsoft.Data.SqlClient;
 using Microsoft.OpenApi.Models;
 using NServiceBus;
@@ -92,6 +93,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");
+
+app.UseHandleErrorMiddleware();
 
 app.UseAuthorization();
 

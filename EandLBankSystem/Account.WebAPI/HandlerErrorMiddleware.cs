@@ -1,13 +1,7 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
+﻿using System.Net;
 
-namespace CoronaApp.Api.Middlewares
+
+namespace Account.WebAPI
 {
     // You may need to install the Microsoft.AspNetCore.Http.Abstractions package into your project
     public class HandlerErrorMiddleware
@@ -43,6 +37,7 @@ namespace CoronaApp.Api.Middlewares
                 };
                 response.StatusCode = (int)statusCode;
                 await response.WriteAsync(ex.Message);
+                
 
                 _logger.Log(LogLevel.Error, ex.Message, response.StatusCode ,ex.StackTrace);
             }

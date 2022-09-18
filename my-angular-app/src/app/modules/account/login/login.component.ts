@@ -47,6 +47,7 @@ export class LoginComponent {
         //location.reload();
       },
       (err) => {
+        debugger;
         console.log(err);
         this.errors = true;
         this.loading = false;

@@ -1,13 +1,7 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
+﻿using System.Net;
 
-namespace CoronaApp.Api.Middlewares
+
+namespace Transaction.WebAPI
 {
     // You may need to install the Microsoft.AspNetCore.Http.Abstractions package into your project
     public class HandlerErrorMiddleware
