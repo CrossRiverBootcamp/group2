@@ -21,7 +21,7 @@ export class RegisterComponent implements OnInit {
   EmailSent: boolean = false;
   verificationLoading: boolean = false;
   errorMessage: string | null = null;
-  sendingEmailError: boolean = false;
+  sendingEmailError: string | undefined;
 
   @Output() goToLoginEvent = new EventEmitter<boolean>();
 
@@ -113,12 +113,12 @@ export class RegisterComponent implements OnInit {
         () => {
           this.EmailSent = true;
           this.verificationLoading = false;
-          this.sendingEmailError = false;
+          this.sendingEmailError = undefined;
         },
         (err) => {
           debugger;
           this.verificationLoading = false;
-          this.sendingEmailError = true;
+          this.sendingEmailError = err.error;
         }
       );
   }

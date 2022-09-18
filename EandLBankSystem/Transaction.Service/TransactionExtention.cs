@@ -11,6 +11,11 @@ public static class TransactionExtention
     {
         services.AddScoped<ITransactionDal, TransactionDal>();
         services.AddDbContextFactory<TransactionContext>(opt => opt.UseSqlServer(connectionString));
+        using (var scope = services.BuildServiceProvider().CreateScope())
+        {
+            var dataContext = scope.ServiceProvider.GetRequiredService<TransactionContext>();
+            dataContext.Database.Migrate();
+        }
     }
 
 }

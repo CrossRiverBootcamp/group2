@@ -1,6 +1,5 @@
 ﻿using Account.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging;
 namespace Account.Data;
 
@@ -12,8 +11,6 @@ public class AccountDal : IAccountDal
     {
         _logger = logger;
         _factory = factory ?? throw new ArgumentNullException(nameof(factory));
-        //using var db = _factory.CreateDbContext();
-        //db.Database.Migrate();
     }
 
     #region Customer
@@ -144,7 +141,6 @@ public class AccountDal : IAccountDal
         }
     }
     #endregion
-
     #region SendEmailTrack
     public async Task<SendEmailTrack?> GetSendEmailTrackAsync(string email)
     {

@@ -1,9 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Transaction.Data.Entities;
 
 namespace Transaction.Data;
@@ -15,8 +10,6 @@ public class TransactionDal : ITransactionDal
     public TransactionDal(IDbContextFactory<TransactionContext> factory)
     {
         _factory = factory ?? throw new ArgumentNullException(nameof(factory));
-        using var db = _factory.CreateDbContext();
-        db.Database.Migrate();
     }
 
     public async Task<int> PostTransactionAsync(Entities.Transaction transaction)

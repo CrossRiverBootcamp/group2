@@ -23,8 +23,8 @@ namespace Account.WebAPI.Controllers
         {
             try 
             { 
-            await _emailVerificationService.AddEmailVerificationProcAsync(email);
-            return Ok();
+                await _emailVerificationService.AddEmailVerificationProcAsync(email);
+                return Ok();
             }
             catch(Exception ex)
             {

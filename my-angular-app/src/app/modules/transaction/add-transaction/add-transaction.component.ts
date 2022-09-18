@@ -39,7 +39,7 @@ export class AddTransactionComponent {
     let newTransaction: Transaction = {
       fromAccount: this._userService.getAccountID() ?? -1,
       toAccount: this.form['accountId'].value,
-      amount: this.form['amount'].value,
+      amount: this.form['amount'].value * 100,
     };
 
     this._transactionService.addNewTransaction(newTransaction).subscribe(

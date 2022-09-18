@@ -33,7 +33,7 @@ public class EmailVerificationService : IEmailVerificationService
                 throw new Exception("You are permanently banned");
             if (set.BlockExpiration > DateTime.UtcNow)
                 throw new Exception("Your blocked for: " + (DateTime.UtcNow - set.BlockExpiration) + " more minutes");
-            if ((DateTime.UtcNow - set.OpenDate).TotalMinutes / 5 < set.NumOfTries)
+            if (set.NumOfTries > 5 && set.NumOfTries > (DateTime.UtcNow - set.OpenDate).TotalMinutes * 5)
             { 
                 set.BlockExpiration = DateTime.UtcNow.AddMinutes(set.SeverityLevel * 10);
                 set.SeverityLevel *= 10;
