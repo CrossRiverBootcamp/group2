@@ -21,7 +21,7 @@ export class LoginComponent {
 
   constructor(
     private accountServise: AccountService,
-    private route: Router,
+    //private route: Router,
     private userService: UserService
   ) {}
 
@@ -42,9 +42,9 @@ export class LoginComponent {
     this.accountServise.login(login).subscribe(
       (res) => {
         this.userService.setAccountID(res);
-        this.route.navigate(['']);
+        //this.route.navigate(['']);
         this.loading = false;
-        location.reload();
+        //location.reload();
       },
       (err) => {
         console.log(err);

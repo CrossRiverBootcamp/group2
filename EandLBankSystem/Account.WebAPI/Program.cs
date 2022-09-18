@@ -42,8 +42,6 @@ builder.Host.UseNServiceBus(hostBuilderContext =>
     conventions.DefiningCommandsAs(type => type.Namespace == "Account.Messages.Commands");
     conventions.DefiningEventsAs(type => type.Namespace == "Transaction.Messages.Events");
 
-
-
     return endpointConfiguration;
 });
 

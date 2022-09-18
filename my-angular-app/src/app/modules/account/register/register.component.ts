@@ -22,6 +22,7 @@ export class RegisterComponent implements OnInit {
   EmailSent: boolean = false;
   verificationLoading: boolean = false;
   errorMessage: string | null = null;
+  sendingEmailError: boolean = false;
 
   @Output() goToLoginEvent = new EventEmitter<boolean>();
 
@@ -43,7 +44,7 @@ export class RegisterComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private accountService: AccountService,
-    private route: Router,
+    //private route: Router,
     private userService: UserService,
     private emailVerificationService: EmailVerificationService
   ) {}
@@ -82,7 +83,7 @@ export class RegisterComponent implements OnInit {
         this.accountService.login(loginSubscriber).subscribe(
           (res) => {
             this.userService.setAccountID(res);
-            this.route.navigate(['']);
+            //this.route.navigate(['']);
           },
           (err) => {
             console.log(err.message);
@@ -119,12 +120,12 @@ export class RegisterComponent implements OnInit {
         () => {
           this.EmailSent = true;
           this.verificationLoading = false;
+          this.sendingEmailError = false;
         },
         (err) => {
           this.verificationLoading = false;
+          this.sendingEmailError = true;
           console.error(err.message);
-          this.errorMessage =
-            'Internal server error has accured while tring to send an email.';
         }
       );
   }

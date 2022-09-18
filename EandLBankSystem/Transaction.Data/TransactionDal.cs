@@ -30,7 +30,7 @@ public class TransactionDal : ITransactionDal
     public async Task UpdateTransactionStatusAsync(int transactionId, bool success, string? failureMessage)
     {
         using var db = _factory.CreateDbContext();
-        var transaction = await db.Transactions.FirstOrDefaultAsync(t => t.Id == transactionId);
+        var transaction = await db.Transactions.FirstOrDefaultAsync(t => t.Id == transactionId) ?? throw new Exception("Transaction doen't exist.");
         transaction.Status =  success switch { true => EStatus.Success, false=> EStatus.Fail };
         transaction.FailureReason = failureMessage;
         await db.SaveChangesAsync();

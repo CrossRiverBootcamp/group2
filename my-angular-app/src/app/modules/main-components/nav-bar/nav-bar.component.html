@@ -1,7 +1,7 @@
 <nav
   class="navbar navbar-icon-top navbar-expand-lg navbar-dark bg-dark padding"
 >
-  <a class="navbar-brand" href="#">E & L</a>
+  <a class="navbar-brand" routerLink="/">E & L</a>
   <button
     class="navbar-toggler"
     type="button"
@@ -17,32 +17,26 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <a class="nav-link" href="#">
+        <a class="nav-link" routerLink="/">
           <i class="fa fa-home"></i>
           Home
           <span class="sr-only">(current)</span>
         </a>
       </li>
+
       <li class="nav-item">
-        <a class="nav-link" href="#">
+        <a class="nav-link" routerLink="/">
           <i class="fa fa-envelope-o">
             <span class="badge badge-primary">{{ messagesCount }}</span>
           </i>
           Messages
         </a>
       </li>
-      <!-- <li class="nav-item">
-        <a class="nav-link disabled" href="#">
-          <i class="fa fa-envelope-o">
-            <span class="badge badge-warning">{{messagesCount}}</span>
-          </i>
-          Disabled
-        </a>
-      </li> -->
+
       <li class="nav-item dropdown">
         <a
           class="nav-link dropdown-toggle"
-          href="#"
+          routerLink="/"
           id="navbarDropdown"
           role="button"
           data-toggle="dropdown"
@@ -53,38 +47,44 @@
           Actions
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="transaction/add-transaction"
+          <a class="dropdown-item" routerLink="transaction/add-transaction"
             >Transaction</a
           >
-          <a class="dropdown-item" href="#">Another action</a>
+          <a class="dropdown-item" routerLink="/">Another action</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="operation/operations-history"
+          <a class="dropdown-item" routerLink="operation/operations-history"
             >Operations history</a
           >
         </div>
       </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" routerLink="/">
+          <i class="fa fa-envelope-o"> </i>
+          Premium
+        </a>
+      </li>
     </ul>
-    <!-- <ul class="navbar-nav">
+    <ul class="navbar-nav">
       <li class="nav-item">
-        <a class="nav-link" href="#">
+        <a class="nav-link" routerLink="/">
           <i class="fa fa-bell">
-            <span class="badge badge-info">11</span>
+            <span class="badge badge-info">3</span>
           </i>
-          Test
+          Notifications
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">
+        <a class="nav-link" routerLink="/">
           <i class="fa fa-globe">
-            <span class="badge badge-success">11</span>
+            <span class="badge badge-success">2</span>
           </i>
-          Test
+          Updates
         </a>
       </li>
-    </ul> -->
+    </ul>
     <ul class="nav navbar-nav navbar-right">
       <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        <a routerLink="/" class="dropdown-toggle" data-toggle="dropdown">
           <span class="glyphicon glyphicon-user"></span> 
           <strong>{{ "Your Account" }}</strong>
           <span class="glyphicon glyphicon-chevron-down"></span>
@@ -97,16 +97,5 @@
         </ul>
       </li>
     </ul>
-    <!-- <form class="form-inline my-2 my-lg-0">
-      <input
-        class="form-control mr-sm-2"
-        type="text"
-        placeholder="Search"
-        aria-label="Search"
-      />
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
-        Search
-      </button>
-    </form> -->
   </div>
 </nav>
