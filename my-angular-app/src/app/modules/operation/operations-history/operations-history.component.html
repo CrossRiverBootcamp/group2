@@ -110,4 +110,17 @@
       aria-label="Select page"
     ></mat-paginator>
   </div>
+
+  <div class="alert alert-danger" *ngIf="error">
+    <svg
+      class="bi flex-shrink-0 me-2"
+      width="24"
+      height="24"
+      role="img"
+      aria-label="Danger:"
+    >
+      <use xlink:href="#exclamation-triangle-fill" />
+    </svg>
+    <strong>Error!</strong> {{ error }}
+  </div>
 </div>

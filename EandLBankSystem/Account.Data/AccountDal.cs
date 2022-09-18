@@ -41,7 +41,7 @@ public class AccountDal:IAccountDal
         using var db = _factory.CreateDbContext();
         Entities.Account accountFound = await db.Accounts
             .Where(a=>a.Id==id).Include(a=> a.Customer)
-            .FirstOrDefaultAsync() ?? throw new KeyNotFoundException(nameof(id));
+            .FirstOrDefaultAsync() ?? throw new Exception($"Intarnal server error: no record was found for '{nameof(id)}' {id}");
         return accountFound;
     }
     public async Task<bool> SignUpAsync(Customer customer)

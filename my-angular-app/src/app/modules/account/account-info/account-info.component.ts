@@ -9,7 +9,7 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./account-info.component.scss'],
 })
 export class AccountInfoComponent implements OnInit {
-  showError: boolean = false;
+  error: string | undefined;
   account?: Account;
   loading: boolean = false;
   @Input() accountID?: number;
@@ -29,8 +29,7 @@ export class AccountInfoComponent implements OnInit {
           this.loading = false;
         },
         (err) => {
-          console.log(err);
-          this.showError = true;
+          this.error = err.error;
           this.loading = false;
         }
       );

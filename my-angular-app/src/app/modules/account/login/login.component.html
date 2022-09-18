@@ -37,7 +37,16 @@
       </a>
     </div>
 
-    <div class="alert alert-danger" *ngIf="errors">
+    <div class="alert alert-danger" *ngIf="errorMessage">
+      <svg
+        class="bi flex-shrink-0 me-2"
+        width="24"
+        height="24"
+        role="img"
+        aria-label="Danger:"
+      >
+        <use xlink:href="#exclamation-triangle-fill" />
+      </svg>
       <strong>Error!</strong> {{ errorMessage }}
     </div>
     <br />

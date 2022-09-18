@@ -1,6 +1,7 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.OpenApi.Models;
 using NServiceBus;
+using Transaction.Api.Middlewares;
 using Transaction.Messages.Commands;
 using Transaction.Service;
 
@@ -92,6 +93,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");
+
+app.UseHandleErrorMiddleware();
 
 app.UseAuthorization();
 

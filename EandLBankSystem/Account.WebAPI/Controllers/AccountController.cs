@@ -27,14 +27,20 @@ public class AccountController : ControllerBase
         }
         catch(Exception ex)
         {
-            return BadRequest(ex);
+            return BadRequest(ex.Message);
         }    
     }
 
     [HttpGet("Account/{id}")]
     public async Task<ActionResult<GetAccountDTO>> GetAccountInfoAsync(int id)
     {
-        return Ok(_mapper.Map<GetAccountDTO>(await _accountService.GetAccountInfoAsync(id)));
+        try {        
+            return Ok(_mapper.Map<GetAccountDTO>(await _accountService.GetAccountInfoAsync(id)));
+        }
+        catch(Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpPost("SignUp/")]

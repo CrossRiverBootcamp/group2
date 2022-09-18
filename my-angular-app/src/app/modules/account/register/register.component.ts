@@ -1,6 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { Login } from 'src/app/models/Login';
 import { Register } from 'src/app/models/Register';
 import { AccountService } from 'src/app/services/Account.service';
@@ -83,20 +82,14 @@ export class RegisterComponent implements OnInit {
         this.accountService.login(loginSubscriber).subscribe(
           (res) => {
             this.userService.setAccountID(res);
-            //this.route.navigate(['']);
           },
           (err) => {
-            console.log(err.message);
-            this.errorMessage =
-              'Internal server error has accured while tring to register.';
+            this.errorMessage = err.error;
           }
         );
       },
       (err) => {
-        console.log(err);
-        console.log(err.message);
-        this.errorMessage =
-          'Internal server error has accured while tring to log into your account.';
+        this.errorMessage = err.error;
         this.loading = false;
       }
     );
@@ -125,7 +118,6 @@ export class RegisterComponent implements OnInit {
         (err) => {
           this.verificationLoading = false;
           this.sendingEmailError = true;
-          console.error(err.message);
         }
       );
   }

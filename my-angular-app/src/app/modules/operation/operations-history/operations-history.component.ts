@@ -38,7 +38,7 @@ export class OperationsHistoryComponent implements AfterViewInit {
   displayedColumns: string[] = ['amount', 'balance', 'date'];
   columnsToDisplayWithExpand = [...this.displayedColumns, 'expand'];
   expandedElement: Account | undefined | null;
-
+  error: string | undefined;
   dataSource!: MatTableDataSource<Operation>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -71,7 +71,7 @@ export class OperationsHistoryComponent implements AfterViewInit {
             this.loading = false;
           },
           (err) => {
-            console.log(err);
+            this.error = err.error;
             this.loading = false;
           }
         );
@@ -87,7 +87,6 @@ export class OperationsHistoryComponent implements AfterViewInit {
   }
 
   pageChanged(event: PageEvent) {
-    debugger;
     this.pageSize = event.pageSize;
     this.currentPage = event.pageIndex;
 

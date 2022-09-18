@@ -13,21 +13,18 @@ import { UserService } from 'src/app/services/user.service';
 export class LoginComponent {
   email: string = '';
   password: string = '';
-  errors: boolean = false;
-  errorMessage: string = '';
+  errorMessage: string | undefined;
   loading: boolean = false;
 
   @Output() goToRegisterEvent = new EventEmitter<boolean>();
 
   constructor(
     private accountServise: AccountService,
-    //private route: Router,
     private userService: UserService
   ) {}
 
   Signin(): void {
     if (!this.email || !this.password) {
-      this.errors = true;
       this.errorMessage = 'Email and Password are requiered.';
       return;
     }
@@ -42,16 +39,11 @@ export class LoginComponent {
     this.accountServise.login(login).subscribe(
       (res) => {
         this.userService.setAccountID(res);
-        //this.route.navigate(['']);
         this.loading = false;
-        //location.reload();
       },
       (err) => {
-        console.log(err);
-        this.errors = true;
         this.loading = false;
-        alert(err.message + err.status);
-        this.errorMessage = 'Incorrect email or password.';
+        this.errorMessage = err.error;
       }
     );
   }

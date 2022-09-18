@@ -15,8 +15,7 @@ export class AddTransactionComponent {
     private _userService: UserService
   ) {}
 
-  showError: boolean = false;
-  error: string = '';
+  error: string | undefined;
   showSuccess: boolean = false;
   loading: boolean = false;
 
@@ -49,17 +48,13 @@ export class AddTransactionComponent {
         this.loading = false;
       },
       (err) => {
-        this.error = 'Server error has accured. pleast try again later.';
-        this.showError = true;
-        console.error(err);
+        this.error = err.error;
         this.loading = false;
       }
     );
   }
 
   setError(): boolean {
-    debugger;
-    this.showError = true;
     if (this.form['accountId']?.errors) {
       this.error = "Field 'AccountID' is required.";
       return true;
@@ -78,14 +73,14 @@ export class AddTransactionComponent {
         'You are not authorized to make a transfer for an amount over $1,000,000';
       return true;
     }
-    this.showError = false;
+    this.error = undefined;
     return false;
   }
 
   transferNext() {
     this.form['accountId'].reset();
     this.form['amount'].reset();
-    this.showError = false;
+    this.error = undefined;
     this.showSuccess = false;
   }
 }
