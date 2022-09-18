@@ -15,32 +15,7 @@ public class OperationService : IOperationService
         _mapper = ConfigureAutoMapper();
     }
 
-    public async Task AddNewOperationsHistory(TransactionModel transactionModel)
-    {
-        Data.Entities.Account fromAccount = await _accountDal.GetAccountInfoAsync(transactionModel.FromAccount);
-        Operation fromOperationHistory = new()
-        {
-            AccountId = transactionModel.FromAccount,
-            TransactionId = transactionModel.TransactionId,
-            Credit = false,
-            TransactionAmount = transactionModel.Amount,
-            Balance = fromAccount.Balance,
-            OperationTime = DateTime.UtcNow
-        };
-
-        Data.Entities.Account toAccount = await _accountDal.GetAccountInfoAsync(transactionModel.ToAccount);
-        Operation toOperationHistory = new()
-        {
-            AccountId = transactionModel.ToAccount,
-            TransactionId = transactionModel.TransactionId,
-            Credit = true,
-            TransactionAmount = transactionModel.Amount,
-            Balance = toAccount.Balance,
-            OperationTime = DateTime.UtcNow
-        };
-
-        await _accountDal.AddNewOperationAsync(fromOperationHistory, toOperationHistory);
-    }
+    
     public async Task<List<OperationModel>> GetOperationsByAccountIdAsync(int accountId, int currentPage, int pageSize)
     {
         List<OperationSecondSideModel> l = await _accountDal.GetOperationsByAccountIdAsync(accountId, currentPage, pageSize);

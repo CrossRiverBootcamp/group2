@@ -42,10 +42,32 @@ public class AccountService:IAccountService
         Customer customer = _mapper.Map<Customer>(customerModel);
         customer.Salt = salt;
         await _accountDal.SignUpAsync(customer);
+        await _accountDal.RemoveSendEmailTrackAsync(customer.Email);
     }
     public async Task ExecuteTransactionAsync(TransactionModel transactionModel)
-    {      
-        await _accountDal.TransferAmountAsync(transactionModel.FromAccount, transactionModel.ToAccount, transactionModel.Amount);
+    {
+        Data.Entities.Account fromAccount = await _accountDal.GetAccountInfoAsync(transactionModel.FromAccount);
+        Operation fromOperationHistory = new()
+        {
+            AccountId = transactionModel.FromAccount,
+            TransactionId = transactionModel.TransactionId,
+            Credit = false,
+            TransactionAmount = transactionModel.Amount,
+            Balance = fromAccount.Balance- transactionModel.Amount,
+            OperationTime = DateTime.UtcNow
+        };
+
+        Data.Entities.Account toAccount = await _accountDal.GetAccountInfoAsync(transactionModel.ToAccount);
+        Operation toOperationHistory = new()
+        {
+            AccountId = transactionModel.ToAccount,
+            TransactionId = transactionModel.TransactionId,
+            Credit = true,
+            TransactionAmount = transactionModel.Amount,
+            Balance = toAccount.Balance+ transactionModel.Amount,
+            OperationTime = DateTime.UtcNow
+        };
+        await _accountDal.TransferAmountAsync(fromOperationHistory,toOperationHistory, transactionModel.Amount);
     }
 
     
