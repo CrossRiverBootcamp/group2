@@ -39,19 +39,7 @@ public class TransactionSagaStartedHandler : IHandleMessages<TransactionSagaStar
             success = false;
             log.Error($"Transaction {message.TransactionId} has failed due to Exception: " + failureMessage);
         }
-
-        if (success)
-        {
-            await _operationService.AddNewOperationsHistory(
-                new TransactionModel { 
-                    TransactionId = message.TransactionId,
-                    FromAccount = message.FromAccount,
-                    ToAccount = message.ToAccount,
-                    Amount = message.Amount,
-                    OperationTime = DateTime.UtcNow
-                });
-        }
-
+       
         FinishTransactionSaga finishTransactionSaga = new()
         {
             TransactionId = message.TransactionId,

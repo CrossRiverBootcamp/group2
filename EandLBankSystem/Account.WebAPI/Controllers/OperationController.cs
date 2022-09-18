@@ -21,7 +21,14 @@ namespace Account.WebAPI.Controllers
         [HttpGet("{accountId}")]
         public async Task<ActionResult<List<GetOperationsDTO>>> GetOperationsByAccountIdAsync( int accountId,[FromQuery] int currentPage, [FromQuery] int pageSize)
         {
-            return Ok(_mapper.Map<List<GetOperationsDTO>>(await _operationService.GetOperationsByAccountIdAsync(accountId, currentPage, pageSize)));
+            try 
+            { 
+               return Ok(_mapper.Map<List<GetOperationsDTO>>(await _operationService.GetOperationsByAccountIdAsync(accountId, currentPage, pageSize)));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

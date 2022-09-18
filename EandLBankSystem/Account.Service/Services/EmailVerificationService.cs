@@ -1,4 +1,5 @@
 ﻿using Account.Data;
+using Account.Data.Entities;
 using Account.Messages.Commands;
 using Account.Service.Models;
 using Microsoft.Extensions.Options;
@@ -21,14 +22,37 @@ public class EmailVerificationService : IEmailVerificationService
         _messageSession = messageSession;
         _mailSettings = mailSettings.Value;
     }
-
-    public async Task AddEmailVerificationAsync(string email)
+    public async Task AddSendEmailTrackAsync(string email)
     {
-        
-        var code = Convert.ToHexString(RandomNumberGenerator.GetBytes(2));
+        SendEmailTrack set = await _accountDal.GetSendEmailTrackAsync(email);
+        if (set == null)
+            await _accountDal.AddSendEmailTrackAsync(new SendEmailTrack() { Email = email , NumOfTries =1 });
+        else
+        {
+            if (set.SeverityLevel == 1000)
+                throw new Exception("You are permanently banned");
+            if (set.BlockExpiration > DateTime.UtcNow)
+                throw new Exception("Your blocked for: " + (DateTime.UtcNow - set.BlockExpiration) + " more minutes");
+            if ((DateTime.UtcNow - set.OpenDate).TotalMinutes / 5 < set.NumOfTries)
+            { 
+                set.BlockExpiration = DateTime.UtcNow.AddMinutes(set.SeverityLevel * 10);
+                set.SeverityLevel *= 10;
+                await _accountDal.UpdateSendEmailTrackAsync(set);
+                throw new Exception("Your blocked for: " + (DateTime.UtcNow - set.BlockExpiration) + " more minutes");
+            }
+            set.NumOfTries++;
+            await _accountDal.UpdateSendEmailTrackAsync(set);
+        }
+    }
+    public async Task AddEmailVerificationProcAsync(string email)
+    {
         if (await _accountDal.EmailAddressExistsAsync(email))
             throw new ArgumentException("Email already exists", email);
 
+        await AddSendEmailTrackAsync(email);
+
+        var code = Convert.ToHexString(RandomNumberGenerator.GetBytes(2));
+       
         List <Task> tasks = new();
         tasks.Add(SendVerificationEmailAsync(email, code));
         tasks.Add(AddEmailRecordAsync(email, code));

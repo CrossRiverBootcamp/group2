@@ -1,10 +1,9 @@
-using CoronaApp.Api.Middlewares;
 using Microsoft.Data.SqlClient;
 using Microsoft.OpenApi.Models;
 using NServiceBus;
-using Transaction.Api.Middlewares;
 using Transaction.Messages.Commands;
 using Transaction.Service;
+using Transaction.WebAPI;
 
 var builder = WebApplication.CreateBuilder(args);
 var databaseConnection = builder.Configuration.GetConnectionString("TransactionDatabase");

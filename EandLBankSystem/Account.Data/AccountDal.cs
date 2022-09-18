@@ -61,11 +61,11 @@ public class AccountDal : IAccountDal
         using var db = _factory.CreateDbContext();
         return await db.Customers.AnyAsync(c => c.Email.Equals(email));
     }
-    public async Task TransferAmountAsync(int fromAccount, int toAccount, int amount)
+    public async Task TransferAmountAsync(Operation operationHistoryfrom, Operation operationHistoryfromTo, int amount)
     {
         using var db = _factory.CreateDbContext();
-        Task<Entities.Account?> fromTask = db.Accounts.FirstOrDefaultAsync(a => a.Id == fromAccount);
-        Task<Entities.Account?> toTask = db.Accounts.FirstOrDefaultAsync(a => a.Id == toAccount);
+        Task<Entities.Account?> fromTask = db.Accounts.FirstOrDefaultAsync(a => a.Id == operationHistoryfrom.AccountId);
+        Task<Entities.Account?> toTask = db.Accounts.FirstOrDefaultAsync(a => a.Id == operationHistoryfromTo.AccountId);
 
         List<Task> tasks = new();
         tasks.Add(fromTask);
@@ -81,21 +81,15 @@ public class AccountDal : IAccountDal
         fromTask.Result.Balance -= amount;
         toTask.Result.Balance += amount;
 
-        await db.SaveChangesAsync();
-    }
-    #endregion
-    #region Operation
-    public async Task AddNewOperationAsync(Operation operationHistoryfrom, Operation operationHistoryfromTo)
-    {
-        using var db = _factory.CreateDbContext();
-
-        List<Task> tasks = new();
         tasks.Add(db.Operations.AddAsync(operationHistoryfromTo).AsTask());
         tasks.Add(db.Operations.AddAsync(operationHistoryfrom).AsTask());
         await Task.WhenAll(tasks);
 
         await db.SaveChangesAsync();
     }
+    #endregion
+    #region Operation
+
     public async Task<List<OperationSecondSideModel>> GetOperationsByAccountIdAsync(int accountId, int currentPage, int pageSize)
     {
         using var db = _factory.CreateDbContext();
@@ -148,6 +142,39 @@ public class AccountDal : IAccountDal
             using var db = _factory.CreateDbContext();
             await db.SaveChangesAsync();
         }
+    }
+    #endregion
+
+    #region SendEmailTrack
+    public async Task<SendEmailTrack?> GetSendEmailTrackAsync(string email)
+    {
+        using var db = _factory.CreateDbContext();
+        return await db.SendEmailTracks.FirstOrDefaultAsync(set => set.Email.Equals(email));
+    }
+
+    public async Task AddSendEmailTrackAsync(SendEmailTrack set)
+    {
+        using var db = _factory.CreateDbContext();
+        await db.SendEmailTracks.AddAsync(set);
+        await db.SaveChangesAsync();
+    }
+
+    public async Task UpdateSendEmailTrackAsync(SendEmailTrack set)
+    {
+        using var db = _factory.CreateDbContext();
+        SendEmailTrack setToUpdate =  await db.SendEmailTracks
+            .FirstOrDefaultAsync(set => set.Email.Equals(set.Email)) ?? throw new KeyNotFoundException("No such sendEmailTrack");
+        db.Entry(setToUpdate).CurrentValues.SetValues(set);
+        await db.SaveChangesAsync();
+    }
+
+    public async Task RemoveSendEmailTrackAsync(string email)
+    {
+        using var db = _factory.CreateDbContext();
+        SendEmailTrack? setToDelete = await db.SendEmailTracks
+         .FirstOrDefaultAsync(set => set.Email.Equals(set.Email));
+        db.Remove(setToDelete);
+        await db.SaveChangesAsync();
     }
     #endregion
 }
