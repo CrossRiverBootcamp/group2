@@ -1,7 +1,6 @@
 ﻿using System.Net;
 
-
-namespace CoronaApp.Api.Middlewares;
+namespace Account.WebAPI;
 
 public class HandlerErrorMiddleware
 {
@@ -37,12 +36,11 @@ public class HandlerErrorMiddleware
         }
     }
 }
-}
 
 public static class HandleErrorMiddlewareExtensions
 {
-public static IApplicationBuilder UseHandleErrorMiddleware(this IApplicationBuilder builder)
-{
-    return builder.UseMiddleware<HandlerErrorMiddleware>();
-}
+    public static IApplicationBuilder UseHandleErrorMiddleware(this IApplicationBuilder builder)
+    {
+        return builder.UseMiddleware<HandlerErrorMiddleware>();
+    }
 }
