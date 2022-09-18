@@ -7,8 +7,9 @@ namespace Account.Data.Migrations
     public partial class addDeleteJob : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
-        {      
+        {
             var createJobSql = @"USE msdb;
+
 EXEC dbo.sp_add_job
     @job_name = 'DeleteExpiredRecords'
 
@@ -26,7 +27,11 @@ EXEC sp_add_jobschedule
 @freq_type=4,
 @freq_interval = 1,
 @active_start_date = @start_date,
-@active_start_time = '000000' USE [EandL.Account];";
+@active_start_time = '000000'
+
+EXEC dbo.sp_add_jobserver
+    @job_name = N'DeleteExpiredRecords' ;
+USE [EandL.Account];";
 
             migrationBuilder.Sql(createJobSql);
 
