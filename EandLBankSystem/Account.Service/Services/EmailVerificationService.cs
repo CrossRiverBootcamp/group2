@@ -24,6 +24,7 @@ public class EmailVerificationService : IEmailVerificationService
 
     public async Task AddEmailVerificationAsync(string email)
     {
+        
         var code = Convert.ToHexString(RandomNumberGenerator.GetBytes(2));
         if (await _accountDal.EmailAddressExistsAsync(email))
             throw new ArgumentException("Email already exists", email);
@@ -31,7 +32,12 @@ public class EmailVerificationService : IEmailVerificationService
         List <Task> tasks = new();
         tasks.Add(SendVerificationEmailAsync(email, code));
         tasks.Add(AddEmailRecordAsync(email, code));
-        tasks.Add(_messageSession.SendLocal(new DelayDeleteVerification() { Email = email }));
+
+        var sendOptions = new SendOptions();
+        sendOptions.DelayDeliveryWith(TimeSpan.FromMinutes(5));
+        sendOptions.RouteToThisEndpoint();
+
+        tasks.Add(_messageSession.Send(new DelayDeleteVerification() { Email = email }, sendOptions));
         await Task.WhenAll(tasks);
     }
     private async Task AddEmailRecordAsync(string email, string code)
