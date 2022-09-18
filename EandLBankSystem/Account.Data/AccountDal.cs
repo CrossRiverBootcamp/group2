@@ -4,11 +4,11 @@ using Microsoft.Extensions.Logging;
 
 namespace Account.Data;
 
-public class AccountDal:IAccountDal
+public class AccountDal : IAccountDal
 {
     private readonly ILogger<AccountDal> _logger;
     private readonly IDbContextFactory<AccountContext> _factory;
-    public AccountDal(IDbContextFactory<AccountContext> factory , ILogger<AccountDal> logger)
+    public AccountDal(IDbContextFactory<AccountContext> factory, ILogger<AccountDal> logger)
     {
         _logger = logger;
         _factory = factory ?? throw new ArgumentNullException(nameof(factory));
@@ -17,12 +17,11 @@ public class AccountDal:IAccountDal
     }
 
     #region Customer
-    public async Task<string> getCustomerByEmailAsync(string email)
+    public async Task<Customer> getCustomerByEmailAsync(string email)
     {
         using var db = _factory.CreateDbContext();
-        Customer customerFound = await db.Customers
-            .FirstOrDefaultAsync(c => c.Email.Equals(email)) ?? throw new UnauthorizedAccessException("The requested user was not found."); 
-        return customerFound.Salt;
+        return await db.Customers
+            .FirstOrDefaultAsync(c => c.Email.Equals(email)) ?? throw new UnauthorizedAccessException("The requested user was not found.");
     }
     public async Task<int> SignInAsync(string email, string password)
     {
@@ -40,14 +39,14 @@ public class AccountDal:IAccountDal
     {
         using var db = _factory.CreateDbContext();
         Entities.Account accountFound = await db.Accounts
-            .Where(a=>a.Id==id).Include(a=> a.Customer)
+            .Where(a => a.Id == id).Include(a => a.Customer)
             .FirstOrDefaultAsync() ?? throw new KeyNotFoundException(nameof(id));
         return accountFound;
     }
     public async Task<bool> SignUpAsync(Customer customer)
     {
-        if(await EmailAddressExistsAsync(customer.Email))  
-            throw new ArgumentException(nameof(customer));
+        if (await EmailAddressExistsAsync(customer.Email))
+            throw new ArgumentException("Email already exists", customer.Email);
         using var db = _factory.CreateDbContext();
         await db.Customers.AddAsync(customer);
         await db.Accounts.AddAsync(new Entities.Account()
@@ -59,7 +58,7 @@ public class AccountDal:IAccountDal
         {
             await db.SaveChangesAsync();
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             _logger.LogError(ex.Message, ex.StackTrace);
             return false;
@@ -68,8 +67,8 @@ public class AccountDal:IAccountDal
     }
     public async Task<bool> EmailAddressExistsAsync(string email)
     {
-       using var db = _factory.CreateDbContext();
-       return await db.Customers.AnyAsync(c => c.Email.Equals(email));  
+        using var db = _factory.CreateDbContext();
+        return await db.Customers.AnyAsync(c => c.Email.Equals(email));
     }
     public async Task TransferAmountAsync(int fromAccount, int toAccount, int amount)
     {
@@ -86,9 +85,9 @@ public class AccountDal:IAccountDal
         from.Balance -= amount;
         to.Balance += amount;
 
-        await db.SaveChangesAsync();   
+        await db.SaveChangesAsync();
     }
-#endregion
+    #endregion
     #region Operation
     public async Task AddNewOperationAsync(Operation operationHistoryfrom, Operation operationHistoryfromTo)
     {
@@ -107,21 +106,29 @@ public class AccountDal:IAccountDal
             join op2 in db.Operations on op1.TransactionId equals op2.TransactionId
             where op1.AccountId == accountId && op1.Id != op2.Id
             orderby op1.OperationTime descending
-            select new OperationSecondSideModel{ 
-            Id = op1.Id
-          , SecondSideAccountId = op2.AccountId
-          , TransactionId = op1.TransactionId
-          , Credit = op1.Credit
-          , TransactionAmount = op1.TransactionAmount
-          , Balance = op1.Balance
-          , OperationTime = op1.OperationTime }
+            select new OperationSecondSideModel
+            {
+                Id = op1.Id
+          ,
+                SecondSideAccountId = op2.AccountId
+          ,
+                TransactionId = op1.TransactionId
+          ,
+                Credit = op1.Credit
+          ,
+                TransactionAmount = op1.TransactionAmount
+          ,
+                Balance = op1.Balance
+          ,
+                OperationTime = op1.OperationTime
+            }
         ;
 
-        if(currentPage == 0)
+        if (currentPage == 0)
             return await sqlQuery.Skip(currentPage * pageSize).Take(pageSize + 1).ToListAsync();
         return await sqlQuery.Skip(currentPage * pageSize + 1).Take(pageSize).ToListAsync();
     }
-#endregion
+    #endregion
     #region EmailVerification
     public async Task AddEmailVerificationAsync(EmailVerification emailVerification)
     {
@@ -132,7 +139,7 @@ public class AccountDal:IAccountDal
     public async Task<EmailVerification?> GetEmailVerificationAsync(string email)
     {
         using var db = _factory.CreateDbContext();
-        return await db.EmailVerifications.FirstOrDefaultAsync(ev => ev.Email.Equals(email));     
+        return await db.EmailVerifications.FirstOrDefaultAsync(ev => ev.Email.Equals(email));
     }
     public async Task RemoveEmailVerificationAsync(EmailVerification verification)
     {

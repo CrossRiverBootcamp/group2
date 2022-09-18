@@ -25,34 +25,28 @@ public class EmailVerificationService : IEmailVerificationService
     public async Task AddEmailVerificationAsync(string email)
     {
         var code = Convert.ToHexString(RandomNumberGenerator.GetBytes(2));
-        //Shoud this be in a transaction?
-        SendVerificationEmail(email, code);
+        if (await _accountDal.EmailAddressExistsAsync(email))
+            throw new ArgumentException("Email already exists!", email);
         await RemoveEmailVerificationAsync(email);
         await _accountDal.AddEmailVerificationAsync(new() { Code = code, Email = email });
-        await _messageSession.SendLocal(new DelayDeleteVerification() { Email = email});
+        //  await _messageSession.SendLocal(new DelayDeleteVerification() { Email = email});
     }
     public async Task VerifyEmailAsync(EmailVerificationModel verification)
     {
         var relevantVerification = await _accountDal.GetEmailVerificationAsync(verification.Email);
 
-        if(relevantVerification?.Code == verification.Code)
-        {
-            await RemoveEmailVerificationAsync(verification.Email);
+        //   await RemoveEmailVerificationAsync(verification.Email);
 
-            if (relevantVerification?.NumOfTries < 5)
-                throw new InvalidOperationException("Too many attempts to resource.");
-
-            if (relevantVerification?.ExpirationTime >= DateTime.UtcNow)
-                throw new InvalidOperationException("Action has expired.");
-        }
-        else
-        {
-            if (relevantVerification != null)
-            {
-                await _accountDal.IncreaseNumOfTriesAsync(relevantVerification.Email);
-                throw new InvalidOperationException("Wrong verification code.");
-            }
+        if (relevantVerification == null)
             throw new InvalidOperationException("No verification is availble for the given email address.");
+        if (relevantVerification.NumOfTries >= 5)
+            throw new InvalidOperationException("Too many attempts to resource.");
+        if (relevantVerification.ExpirationTime >= DateTime.UtcNow)
+            throw new InvalidOperationException("Action has expired.");
+        if (relevantVerification.Code != verification.Code)
+        {
+            await _accountDal.IncreaseNumOfTriesAsync(relevantVerification.Email);
+            throw new InvalidOperationException("Wrong verification code.");
         }
     }
     public async Task RemoveEmailVerificationAsync(string email)
@@ -78,6 +72,6 @@ public class EmailVerificationService : IEmailVerificationService
         };
         mail.To.Add(toEmail);
 
-        client.Send(mail);
+        client.SendAsync(mail,null);
     }
 }

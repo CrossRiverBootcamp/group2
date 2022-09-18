@@ -26,7 +26,7 @@ public class AccountService:IAccountService
    
     public async Task<int> SignInAsync(string email, string password)
     {
-        string salt = await _accountDal.getCustomerByEmailAsync(email);
+        string salt = (await _accountDal.getCustomerByEmailAsync(email)).Salt;
         password = _passwordHash.HashPassword(password, salt, N_ITERATIONS, N_HASH);
         return await _accountDal.SignInAsync(email, password);
     }

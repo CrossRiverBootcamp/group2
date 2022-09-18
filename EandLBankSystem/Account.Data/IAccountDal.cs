@@ -4,7 +4,7 @@ namespace Account.Data;
 
 public interface IAccountDal
 {
-    Task<string> getCustomerByEmailAsync(string email);
+    Task<Customer> getCustomerByEmailAsync(string email);
     Task<int> SignInAsync(string email, string password);
     Task<Entities.Account> GetAccountInfoAsync(int id);
     Task<bool> SignUpAsync(Customer customer);
@@ -15,5 +15,6 @@ public interface IAccountDal
     Task<EmailVerification?> GetEmailVerificationAsync(string email);
     Task RemoveEmailVerificationAsync(EmailVerification verification);
     Task IncreaseNumOfTriesAsync(string email);
+    Task<bool> EmailAddressExistsAsync(string email);
 }
 
