@@ -7,7 +7,6 @@ import { AccountService } from 'src/app/services/Account.service';
 import { AccoutContainerComponent } from './accout-container/accout-container.component';
 import { AccountInfoComponent } from './account-info/account-info.component';
 import localeHe from '@angular/common/locales/he';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
 
 registerLocaleData(localeHe);

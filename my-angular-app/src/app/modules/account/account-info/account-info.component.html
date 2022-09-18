@@ -14,7 +14,7 @@
           <p class="text-left small">{{ account?.email }}</p>
           <div *ngIf="private">
             <p class="text-left">
-              <a href="#" class="btn btn-secondary btn-block btn-sm">{{
+              <a routerLink="#" class="btn btn-secondary btn-block btn-sm">{{
                 " since: " + (account?.openDate | date: "short":"+600")
               }}</a>
             </p>
@@ -30,14 +30,14 @@
         <div class="col-lg-12">
           <p>
             <a
-              href="operation/operations-history"
+              routerLink="operation/operations-history"
               class="btn btn-primary btn-block"
               >{{ "balance: " + account?.balance
               }}<i class="fas fa-dollar-sign"></i
             ></a>
           </p>
         </div>
-        <small (click)="logout()">Quit</small>
+        <a (click)="logout()" href="/">Quit</a>
       </div>
     </div>
   </li>

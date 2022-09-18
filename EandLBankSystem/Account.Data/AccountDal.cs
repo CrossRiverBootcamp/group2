@@ -146,7 +146,8 @@ public class AccountDal:IAccountDal
         if (verification != null)
         {
             verification.NumOfTries++;
-            await _factory.CreateDbContext().SaveChangesAsync();
+            using var db = _factory.CreateDbContext();
+            await db.SaveChangesAsync();
         }
     }
     #endregion

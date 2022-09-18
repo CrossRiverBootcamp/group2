@@ -25,11 +25,19 @@ public class EmailVerificationService : IEmailVerificationService
     public async Task AddEmailVerificationAsync(string email)
     {
         var code = Convert.ToHexString(RandomNumberGenerator.GetBytes(2));
-        //Shoud this be in a transaction?
-        SendVerificationEmail(email, code);
+        List <Task> tasks = new();
+
+        tasks.Add(SendVerificationEmailAsync(email, code));
+        tasks.Add(AddEmailAsync(email, code));
+
+        await Task.WhenAll(tasks);
+
+        await _messageSession.SendLocal(new DelayDeleteVerification() { Email = email});
+    }
+    private async Task AddEmailAsync(string email, string code)
+    {
         await RemoveEmailVerificationAsync(email);
         await _accountDal.AddEmailVerificationAsync(new() { Code = code, Email = email });
-        await _messageSession.SendLocal(new DelayDeleteVerification() { Email = email});
     }
     public async Task VerifyEmailAsync(EmailVerificationModel verification)
     {
@@ -37,9 +45,7 @@ public class EmailVerificationService : IEmailVerificationService
 
         if(relevantVerification?.Code == verification.Code)
         {
-            await RemoveEmailVerificationAsync(verification.Email);
-
-            if (relevantVerification?.NumOfTries < 5)
+            if (relevantVerification?.NumOfTries >= 5)
                 throw new InvalidOperationException("Too many attempts to resource.");
 
             if (relevantVerification?.ExpirationTime >= DateTime.UtcNow)
@@ -61,7 +67,7 @@ public class EmailVerificationService : IEmailVerificationService
         if (relevantVerification != null)
             await _accountDal.RemoveEmailVerificationAsync(relevantVerification);
     }
-    private void SendVerificationEmail(string toEmail, string code)
+    private async Task SendVerificationEmailAsync(string toEmail, string code)
     {
         var client = new SmtpClient(_mailSettings.Host, _mailSettings.Port)
         {
@@ -69,7 +75,7 @@ public class EmailVerificationService : IEmailVerificationService
             EnableSsl = true
         };
 
-        var mail = new MailMessage()
+        MailMessage mail = new MailMessage()
         {
             Subject = "Verification email [E & L Bank]",
             From = new MailAddress(_mailSettings.Mail),
@@ -78,6 +84,6 @@ public class EmailVerificationService : IEmailVerificationService
         };
         mail.To.Add(toEmail);
 
-        client.Send(mail);
+        await client.SendMailAsync(mail);
     }
 }

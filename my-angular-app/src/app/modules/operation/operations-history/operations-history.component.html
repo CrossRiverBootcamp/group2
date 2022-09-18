@@ -1,5 +1,5 @@
 <div class="body">
-  <h1 class="mrgin-left">View your Operations History</h1>
+  <h1 class="mrgin-left">Your Operations History</h1>
 
   <mat-form-field appearance="standard" class="mrgin-left">
     <mat-label>Filter Table</mat-label>
@@ -104,7 +104,7 @@
     </table>
 
     <mat-paginator
-      [pageSizeOptions]="[5, 10, 25, 100]"
+      [pageSize]="pageSize"
       aria-label="Select page of reports"
       (page)="pageChanged($event)"
       aria-label="Select page"

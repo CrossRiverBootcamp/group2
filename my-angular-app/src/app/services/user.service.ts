@@ -1,51 +1,35 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Login } from '../models/Login';
-import { AccountService } from './Account.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  private static accountID?: number = Number(
-    sessionStorage.getItem('accountID')
-  );
-  private static authoBehavior = new BehaviorSubject<boolean>(false);
-  private static auth = UserService.authoBehavior.asObservable();
-
-  // constructor(private accountServise: AccountService) {
-  //   let login: Login = { email: 'string@string.com', password: '123123' };
-  //   this.accountServise.login(login).subscribe(
-  //     (res) => {
-  //       this.setAccountID(res);
-  //     },
-  //     (err) => {
-  //       console.log(err);
-  //     }
-  //   );
-  // }
+  private accountID?: number;
+  private authoBehavior = new BehaviorSubject<boolean>(false);
+  private auth = this.authoBehavior.asObservable();
 
   getAuth(): Observable<boolean> {
-    if (UserService.accountID) this.setAuth(true);
+    if (this.accountID) this.setAuth(true);
     else this.setAuth(false);
-    return UserService.auth;
+    return this.auth;
   }
 
   setAuth(bool: boolean) {
-    UserService.authoBehavior.next(bool);
+    this.authoBehavior.next(bool);
   }
 
   setAccountID(id: number) {
     this.setAuth(true);
-    sessionStorage.setItem('accountID', id.toString());
+    this.accountID = id;
   }
 
   getAccountID(): number | undefined {
-    return UserService.accountID;
+    return this.accountID;
   }
 
   logOut() {
-    sessionStorage.clear();
+    this.accountID = undefined;
     this.setAuth(false);
   }
 }
